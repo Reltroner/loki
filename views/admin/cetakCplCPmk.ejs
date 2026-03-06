@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <link rel="stylesheet" href="<% if (user.type == "T") { %>
+        /css/style-admin.css
+       <% } else if (user.type == "D") { %>
+       /css/style-dosen.css
+       <% } else {%>
+       /css/style-mahasiswa.css
+       <% } %> ">
+    
+    <!-- Boxiocns CDN Link -->
+    <link rel="stylesheet" href="/public/css/table.css">
+    <link href="/vendor/sweetalert2.all.min.css"></link>
+    <script src="/vendor/sweetalert2.all.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+
+  
+  <div id="container">
+    <h3 class="admin-title">Peta CPL ke CPMK - <%= course_plan.name %></h3>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table table-responsive-xl">
+            <thead>
+              <tr>
+                <th width="10%" class="text-center" scope="col">CP</th>
+                <th class="text-center" scope="col">CP Program Studi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">CP-1</td>
+                <td>Mengidentifikasi, memformulasikan dan memecahkan permasalahan kebutuhan informasi dari suatu organisasi</td>
+              </tr>
+              <tr>
+                <td class="text-center">CP-2</td>
+                <td>Mengintegrasikan solusi berbasis teknologi informasi secara efektif pada suatu organisasi</td>
+              </tr>
+              <tr>
+                <td class="text-center">CP-3</td>
+                <td>Menerapkan konsep-konsep dasar dalam merencanakan Sistem Informasi, merancang Sistem Informasi, membangun Sistem Informasi, mengoperasikan Sistem Informasi, dan mengevaluasi Sistem Informasi</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table table-responsive-xl">
+            <thead>
+              <tr>
+                <th width="10%" class="text-center" scope="col">CPMK</th>
+                <th width="65%" class="text-center" scope="col">Capaian Pembelajaran Mata Kuliah (CPMK)</th>
+                <th class="text-center" scope="col">CP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cpmkAll.forEach(item => { %>
+              <tr>
+                <td class="text-center"><%= item.code %></td>
+                <td><%= item.name %></td>
+  
+                <td class="text-center"><% item.curriculum_los.forEach(a => { %><%= a.code %>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<% }) %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+ <script>window.print()</script>
+
+ <%- include('../partials/footer'); -%>
