@@ -1,122 +1,173 @@
-# 📚 RPS Management System
+# RPS Management System
 
-A **Course Plan (RPS) Management System** built using **Node.js, Express, MySQL, and EJS** to help universities manage course plans, learning outcomes, and lecturer teaching assignments.
+### Academic Course Plan (RPS) Platform
 
-This system allows administrators, lecturers, and students to interact with structured **RPS (Rencana Pembelajaran Semester)** data in a centralized platform.
+A role-based **RPS (Rencana Pembelajaran Semester) management platform** built with **Node.js, Express, MySQL, and EJS**, designed to digitize the creation, management, and distribution of course plans in higher education institutions.
 
-The project demonstrates **backend API design, database modeling, role-based access control, and MVC architecture**.
+The system provides structured management of:
 
----
+* course plans (RPS)
+* curriculum learning outcomes (CPL)
+* course learning outcomes (CPMK)
+* lecturer assignments
+* academic assessments
+* student course access
 
-# 🎯 Project Overview
-
-The application digitizes the management of **RPS documents** used in Indonesian universities.
-
-Core capabilities include:
-
-* Course management
-* Learning outcomes (CPL / CPMK)
-* Lecturer course assignments
-* RPS creation and revision
-* Student access to course plans
-* Printable RPS documents
+This project demonstrates **backend system architecture, relational data modeling, authentication systems, and role-based application design**.
 
 ---
 
-# ⚙️ Tech Stack
+# System Overview
 
-Backend:
+Universities often manage RPS documents manually using spreadsheets or PDFs.
+This system transforms the workflow into a **centralized web platform** that enables structured academic management.
 
-* **Node.js**
-* **Express.js**
-* **MySQL**
-* **JWT Authentication**
+Key capabilities:
 
-Frontend:
+* centralized course plan management
+* learning outcome mapping (CPL → CPMK)
+* lecturer RPS authoring tools
+* academic reporting
+* student RPS discovery
+* printable academic documents
 
-* **HTML**
-* **CSS**
-* **JavaScript**
-* **EJS Templating**
+---
 
-Other Tools:
+# Tech Stack
 
+Backend
+
+* Node.js
+* Express.js
+* MySQL
+* JWT Authentication
+
+Frontend
+
+* HTML
+* CSS
+* JavaScript
+* EJS Template Engine
+
+Infrastructure Concepts
+
+* MVC architecture
 * REST API
-* MVC Architecture
-* Express Middleware
+* middleware-based security
+* relational database modeling
 
 ---
 
-# 🧠 System Architecture
-
-The application uses a layered **MVC architecture**.
+# High Level Architecture
 
 ```
-Client Browser
-      │
-      ▼
-   Express Routes
-      │
-      ▼
-   Controllers
-      │
-      ▼
-     Models
-      │
-      ▼
-    MySQL Database
+Browser / Client
+        │
+        ▼
+   Express Router Layer
+        │
+        ▼
+    Controller Layer
+        │
+        ▼
+      Model Layer
+        │
+        ▼
+   MySQL Relational Database
 ```
 
-### Responsibilities
+### Architectural Principles
 
-| Layer       | Responsibility              |
-| ----------- | --------------------------- |
-| Routes      | Define system endpoints     |
-| Controllers | Handle application logic    |
-| Models      | Database interaction        |
-| Middleware  | Security and authentication |
-| Views       | UI rendering using EJS      |
+The system follows several core backend principles:
+
+1. **Separation of Concerns**
+
+Routes, controllers, models, and views are isolated into independent layers.
+
+2. **Controller-driven logic**
+
+Business logic is centralized in controllers rather than routes.
+
+3. **Relational data modeling**
+
+Course plans and learning outcomes are stored using normalized database structures.
+
+4. **Middleware security**
+
+Authentication and authorization are enforced before protected endpoints are accessed.
 
 ---
 
-# 👥 User Roles
+# Role-Based Access Model
 
-The system supports **three main roles**.
+The application defines three primary actors.
 
-### Admin
+## Admin
 
-Responsible for academic management:
+Responsibilities:
 
 * manage courses
 * manage lecturers
-* monitor RPS completion
+* monitor RPS progress
 * generate reports
+* manage curriculum outcomes
 
----
+## Lecturer (Dosen)
 
-### Lecturer (Dosen)
+Responsibilities:
 
-Responsible for creating course plans:
-
-* create RPS
+* create and edit RPS
 * define CPMK
-* define learning activities
-* add references
-* manage assessments
+* design assessment structures
+* manage references
+* update course learning plans
+
+## Student (Mahasiswa)
+
+Capabilities:
+
+* view available courses
+* search RPS documents
+* download printable RPS
 
 ---
 
-### Student (Mahasiswa)
+# Data Model
 
-Students can:
+Core domain entities:
 
-* view course plans
-* search RPS
-* export RPS documents
+| Entity              | Description            |
+| ------------------- | ---------------------- |
+| Users               | system accounts        |
+| Lecturers           | academic staff         |
+| Courses             | academic subjects      |
+| Course Plans        | RPS documents          |
+| Course Plan Details | meeting-level planning |
+| Assessments         | grading components     |
+| Curriculum Outcomes | CPL mapping            |
+| Course Outcomes     | CPMK definitions       |
+
+Relationship example:
+
+```
+Curriculum
+   │
+   ▼
+CPL (Learning Outcomes)
+   │
+   ▼
+CPMK
+   │
+   ▼
+Course Plan
+   │
+   ▼
+Course Plan Details
+```
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```
 .
@@ -139,7 +190,8 @@ Students can:
 │   ├── course_plans.js
 │   ├── course_plan_details.js
 │   ├── course_plan_assessments.js
-│   └── curriculum_los.js
+│   ├── curriculum_los.js
+│   └── dbconfig.js
 │
 ├── routes/
 │   ├── auth.js
@@ -161,8 +213,6 @@ Students can:
 │   ├── js/
 │   └── images/
 │
-├── frontend/
-├── template/
 ├── server.js
 ├── index.js
 └── loki.sql
@@ -170,47 +220,48 @@ Students can:
 
 ---
 
-# 🗄 Database
+# Authentication Model
 
-Database schema provided in:
+Authentication is implemented using **JWT tokens**.
+
+Authentication flow:
 
 ```
-loki.sql
+User Login
+    │
+    ▼
+JWT Token Generated
+    │
+    ▼
+Client stores token
+    │
+    ▼
+Protected API Request
+    │
+    ▼
+verifyToken Middleware
+    │
+    ▼
+Authorized Controller Access
 ```
 
-Main entities:
-
-| Table                   | Description              |
-| ----------------------- | ------------------------ |
-| users                   | system users             |
-| lecturers               | lecturer data            |
-| courses                 | course information       |
-| course_plans            | RPS documents            |
-| course_plan_details     | learning session details |
-| course_plan_assessments | evaluation components    |
-| curriculum_los          | learning outcomes        |
-
----
-
-# 🔐 Authentication & Security
-
-Authentication uses **JWT-based session validation**.
-
-Middleware:
+Middleware responsible:
 
 ```
 middleware/verifyToken.js
 ```
 
-Responsibilities:
+Security responsibilities:
 
-* validate user token
-* restrict protected endpoints
-* enforce role-based access
+* token validation
+* unauthorized request blocking
+* session protection
 
 ---
 
-# 📡 API Example
+# API Layer
+
+Example endpoint groups.
 
 Authentication
 
@@ -244,7 +295,7 @@ GET /mahasiswa/search
 
 ---
 
-# ▶ Installation
+# Installation
 
 Clone repository
 
@@ -259,13 +310,9 @@ Install dependencies
 npm install
 ```
 
-Configure environment variables
+Configure environment
 
-```
-.env
-```
-
-Example:
+Create `.env`
 
 ```
 PORT=3000
@@ -282,13 +329,13 @@ Import database
 loki.sql
 ```
 
-Run application
+Run server
 
 ```
 npm start
 ```
 
-Server will run on:
+Application runs at
 
 ```
 http://localhost:3000
@@ -296,42 +343,67 @@ http://localhost:3000
 
 ---
 
-# 🧪 Engineering Concepts Demonstrated
+# Engineering Decisions
 
-This project demonstrates several backend engineering concepts:
+### Why Express.js
 
-* RESTful API design
-* MVC architecture
+Express provides a minimal backend framework suitable for structured MVC implementations.
+
+### Why MySQL
+
+The system requires structured relational modeling for academic relationships such as:
+
+* courses
+* learning outcomes
+* course plans
+* lecturer assignments
+
+### Why EJS
+
+EJS allows server-side rendering with dynamic templates while keeping frontend lightweight.
+
+---
+
+# Scalability Considerations
+
+Future architectural improvements could include:
+
+* service layer abstraction
+* API versioning
+* database migrations
+* RBAC policy engine
+* REST API documentation (OpenAPI)
+* frontend SPA architecture (React / Vue)
+* containerization with Docker
+
+---
+
+# Contributors
+
+| Name                            | Role     |
+| ------------------------------- | -------- |
+| Nada Safarina                   | Frontend |
+| Dwisuci Insani Karimah          | Frontend |
+| Annisa Ulfa                     | Backend  |
+| Muhammad Rayhan Rizaldi         | Backend  |
+| Boby Darmawan                   | Backend  |
+| Raidan Malik Sandra (Reltroner) | Backend  |
+
+---
+
+# Academic Context
+
+This project was developed as part of a university coursework assignment focused on building a **web-based academic management system**.
+
+The implementation demonstrates concepts in:
+
+* full-stack web development
+* backend system design
 * relational database modeling
-* role-based access control
-* modular route design
-* middleware-based authentication
+* authentication systems
 
 ---
 
-# 👥 Contributors
+# License
 
-Project developed by **Kelompok 2**
-
-| Name                            | Student ID |
-| ------------------------------- | ---------- |
-| Nada Safarina                   | 2011521015 |
-| Dwisuci Insani Karimah          | 2011522011 |
-| Annisa Ulfa                     | 2011522015 |
-| Muhammad Rayhan Rizaldi         | 2011522021 |
-| Boby Darmawan                   | 2011522023 |
-| Raidan Malik Sandra (Reltroner) | 2011523007 |
-
----
-
-# 📌 Project Purpose
-
-This project was developed as part of an academic assignment to design a **web-based RPS management platform**.
-
-It also serves as a **learning project demonstrating full-stack web development with Node.js and MySQL**.
-
----
-
-# 📜 License
-
-Open source for educational and development purposes.
+Open source for academic and educational purposes.
