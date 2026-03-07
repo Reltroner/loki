@@ -1,49 +1,44 @@
-// skema orm lecturers
-const Sequelize = require("sequelize");
-const db = require("../config/conn");
+// models/users.js
 
-const users = db.define(
-  "users",
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    email_verified_at: {
-      type: Sequelize.DATE,
-    },
-    password: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    remember_token: {
-      type: Sequelize.STRING,
-    },
-    type: {
-      type: Sequelize.STRING,
-      allowNull:false,
-    },
-    created_at: {
-      type: Sequelize.DATE,
-    },
-    updated_at: {
-      type: Sequelize.DATE,
-    },
-  },
+module.exports = (sequelize, DataTypes) => {
 
-  {
-    tableName: "users",
-    timestamps: false //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-  }
-);
-module.exports = users;
+  const Users = sequelize.define(
+
+    "Users",
+
+    {
+
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+
+      name: {
+        type: DataTypes.STRING
+      },
+
+      email: {
+        type: DataTypes.STRING
+      },
+
+      password: {
+        type: DataTypes.STRING
+      },
+
+      type: {
+        type: DataTypes.STRING
+      }
+
+    },
+
+    {
+      tableName: "users",
+      timestamps: false
+    }
+
+  );
+
+  return Users;
+
+};

@@ -1,68 +1,66 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require("sequelize");
-const course_plan_details = require("./course_plan_details");
-const course_plan_detail_refs = require("./course_plan_detail_refs");
-const course_plans = require("./course_plans");
+// models/course_plan_references.js
 
-const course_plan_references = db.define(
-  "course_plan_references",
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
+module.exports = (sequelize, DataTypes) => {
 
-    course_plan_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: course_plans,
-        key: "id",
+  const CoursePlanReferences = sequelize.define(
+
+    "CoursePlanReferences",
+
+    {
+
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
       },
+
+      course_plan_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+      },
+
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      author: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      publisher: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      year: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      created_at: {
+        type: DataTypes.DATE,
+      },
+
+      update_at: {
+        type: DataTypes.DATE,
+      },
+
     },
 
-    title: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
+    {
+      tableName: "course_plan_references",
+      timestamps: false,
+    }
 
-    author: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
+  );
 
-    publisher: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
+  return CoursePlanReferences;
 
-    year: {
-      type: Sequelize.DATE,
-      allowNull: false,
-    },
-
-    description: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-
-    created_at: {
-      type: Sequelize.DATE,
-    },
-
-    update_at: {
-      type: Sequelize.DATE,
-    },
-  },
-
-  {
-    tableName: "course_plan_references",
-    timestamps: false,
-  }
-);
-
-course_plan_references.belongsToMany(course_plan_details, { through: course_plan_detail_refs, foreignKey: "course_plan_reference_id" });
-course_plan_details.belongsToMany(course_plan_references, { through: course_plan_detail_refs, foreignKey: "course_plan_detail_id" });
-
-module.exports = course_plan_references;
+};

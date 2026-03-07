@@ -1,40 +1,47 @@
-const { Sequelize, DataTypes } = require("sequelize");
+// models/course_lo_details.js
 
-const db = require("../config/conn");
+module.exports = (sequelize, DataTypes) => {
 
-const course_lo_details = db.define(
-  "course_lo_details",
-  {
-    id: {
-      type: Sequelize.BIGINT,
-      primaryKey: true,
-      autoIncrement: true,
+  const CourseLoDetails = sequelize.define(
+
+    "CourseLoDetails",
+
+    {
+
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+
+      curriculum_lo_id: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
+
+      course_lo_id: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
+
+      created_at: {
+        type: DataTypes.DATE,
+      },
+
+      updated_at: {
+        type: DataTypes.DATE,
+      },
+
     },
 
-    curriculum_lo_id: {
-      type: Sequelize.BIGINT,
-      foreignKey: true,
-    },
+    {
+      tableName: "course_lo_details",
+      timestamps: false,
+      underscored: true,
+    }
 
-    course_lo_id: {
-      type: Sequelize.BIGINT,
-      foreignKey: true,
-    },
+  );
 
-    created_at: {
-      type: Sequelize.DATE,
-    },
+  return CourseLoDetails;
 
-    updated_at: {
-      type: Sequelize.DATE,
-    },
-  },
-
-  {
-    tableName: "course_lo_details",
-    timestamps: false,
-    underscored: true,
-  }
-);
-
-module.exports = course_lo_details;
+};

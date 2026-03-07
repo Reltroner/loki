@@ -1,3 +1,4 @@
+// routes/auth.js
 const express = require('express');
 const {signup_get, signup_post, login_get, login_post, logout_get} = require('../controller/users');
 const {authenticateToken} = require('../middleware/verifyToken');

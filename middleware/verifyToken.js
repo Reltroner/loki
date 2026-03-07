@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const users = require("../models/users");
+const { Users } = require("../models");
 dotenv.config();
 
 
@@ -24,7 +24,7 @@ const checkUser = (req, res, next) => {
         res.locals.user = null;
         next();
       } else {
-        let user = await users.findByPk(decodedToken.id);
+        let user = await Users.findByPk(decodedToken.id);
         res.locals.user = user;
         next();
       }

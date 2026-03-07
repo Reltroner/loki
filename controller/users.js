@@ -1,140 +1,213 @@
-const users = require("../models/users");
+// controller/users.js
+
+const { Users } = require("../models");
+
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 
-const login = async function (email, password) {
-  const user = await users.findOne({ where: { email: email } });
-  if (user) {
-    const auth = await users.findOne({ where: { password: password } });
-    if (auth) {
-      return user;
-    }
-    throw Error("incorrect password");
+const maxAge = 3 * 24 * 60 * 60;
+const secret = process.env.TOKEN_SECRET;
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTH HELPERS
+|--------------------------------------------------------------------------
+*/
+
+const login = async (email) => {
+
+  const user = await Users.findOne({
+    where: { email },
+  });
+
+  if (!user) {
+    throw Error("incorrect email");
   }
-  throw Error("incorrect email");
+
+  return user;
+
 };
 
-// handle errors
+
+const createToken = (id, type) => {
+
+  return jwt.sign(
+    { id, type },
+    secret,
+    { expiresIn: maxAge }
+  );
+
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| ERROR HANDLER
+|--------------------------------------------------------------------------
+*/
+
 const handleErrors = (err) => {
-  console.log(err.message, err.code);
-  let errors = { email: "", password: "" };
 
-  // incorrect email
+  console.log("AUTH ERROR:", err.message);
+
+  const errors = {
+    email: "",
+    password: "",
+  };
+
   if (err.message === "incorrect email") {
-    errors.email = "That email is not registered";
+    errors.email = "Email tidak terdaftar";
   }
 
-  // incorrect password
   if (err.message === "incorrect password") {
-    errors.password = "That password is incorrect";
-  }
-
-  // duplicate email error
-  if (err.code === 11000) {
-    errors.email = "that email is already registered";
-    return errors;
-  }
-
-  // validation errors
-  if (err.message.includes("user validation failed")) {
-    // console.log(err);
-    Object.values(err.errors).forEach(({ properties }) => {
-      // console.log(val);
-      // console.log(properties);
-      errors[properties.path] = properties.message;
-    });
+    errors.password = "Password salah";
   }
 
   return errors;
+
 };
 
-// create json web token
-const maxAge = 3 * 24 * 60 * 60;
-dotenv.config();
-let secret = process.env.TOKEN_SECRET;
-const createToken = (id, type) => {
-  return jwt.sign({ id, type }, secret, {
-    expiresIn: maxAge,
-  });
-};
+
+/*
+|--------------------------------------------------------------------------
+| AUTH PAGES
+|--------------------------------------------------------------------------
+*/
 
 const signup_get = (req, res) => {
-  res.render("signup");
+  return res.render("signup");
 };
 
 const login_get = (req, res) => {
-  res.render("login");
+  return res.render("login");
 };
+
+
+/*
+|--------------------------------------------------------------------------
+| SIGNUP
+|--------------------------------------------------------------------------
+*/
 
 const signup_post = async (req, res) => {
-  const { name, email, password, confPassword, type } = req.body;
-  if (password !== confPassword) return res.status(400).json({ msg: "Password dan Confirm Password tidak cocok" });
-  const salt = await bcrypt.genSalt();
-  const hashPassword = await bcrypt.hash(password, salt);
 
-  const emailExist = await users.findOne({ where: { email: req.body.email } });
-  if (emailExist) return res.status(400).send("Email sudah dipakai");
+  const { name, email, password, confPassword, type } = req.body;
+
+  if (password !== confPassword) {
+    return res.status(400).send("Password dan Confirm Password tidak cocok");
+  }
 
   try {
-    await users.create({
-      name: name,
-      email: email,
-      password: hashPassword,
-      type: type,
+
+    const emailExist = await Users.findOne({
+      where: { email },
     });
-    res.redirect("/auth/login");
+
+    if (emailExist) {
+      return res.status(400).send("Email sudah dipakai");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+
+    const hashPassword = await bcrypt.hash(password, salt);
+
+
+    await Users.create({
+
+      name,
+      email,
+      password: hashPassword,
+      type,
+
+    });
+
+
+    return res.redirect("/auth/login");
+
+
   } catch (err) {
+
     const errors = handleErrors(err);
-    res.status(400).json({ errors });
+
+    return res.status(400).json({ errors });
+
   }
+
 };
+
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN
+|--------------------------------------------------------------------------
+*/
 
 const login_post = async (req, res) => {
+
   const { email, password } = req.body;
+
   try {
-    const user = await login(email, password);
-    if (!user) return res.status(400).send("Email tidak ditemukan");
 
-    // Cek Password
-    const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) return res.status(400).send("Password Salah");
+    const user = await login(email);
 
-    let today = new Date();
-    let date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let dateTime = date + " " + time;
+    const validPass = await bcrypt.compare(password, user.password);
+
+    if (!validPass) {
+      throw Error("incorrect password");
+    }
 
     const token = createToken(user.id, user.type);
-    const type = user.type;
 
-    await users.update(
-      {
-        remember_token: token,
-        email_verified_at: dateTime,
-      },
-      {
-        where: { email: req.body.email },
-      }
-    );
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 }).cookie("type", type, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({ user: user.id });
-    // res.redirect('/')
+    res
+      .cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      })
+      .cookie("type", user.type, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+
+    return res.redirect("/");
+
+
   } catch (err) {
+
     const errors = handleErrors(err);
-    res.status(400).json({ errors });
+
+    return res.status(400).json(errors);
+
   }
+
 };
+
+
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
 
 const logout_get = (req, res) => {
+
   res.cookie("jwt", "", { maxAge: 1 });
+
   res.cookie("type", "", { maxAge: 1 });
-  // res.clearCookie('jwt');
-  res.redirect("/auth/login");
+
+  return res.redirect("/auth/login");
+
 };
 
-module.exports = { signup_get, signup_post, login_get, login_post, logout_get };
+
+module.exports = {
+
+  signup_get,
+  signup_post,
+  login_get,
+  login_post,
+  logout_get,
+
+};

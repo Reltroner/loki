@@ -1,48 +1,61 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require('sequelize');
-const courses = require("./courses");
+// models/curricula.js
 
-const curricula = db.define('curricula', {
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    name: {
-        type: Sequelize.STRING,
+module.exports = (sequelize, DataTypes) => {
+
+  const Curricula = sequelize.define(
+
+    "Curricula",
+
+    {
+
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+
+      name: {
+        type: DataTypes.STRING,
         allowNull: false
-    },
-    active: {
-        type: Sequelize.STRING,
+      },
+
+      active: {
+        type: DataTypes.STRING,
         allowNull: false
-    },
-    year_start: {
-        type: Sequelize.INTEGER,
+      },
+
+      year_start: {
+        type: DataTypes.INTEGER,
         allowNull: false
-    },
-    year_end: {
-        type: Sequelize.INTEGER,
+      },
+
+      year_end: {
+        type: DataTypes.INTEGER,
         allowNull: false
-    },
-    description: {
-        type: Sequelize.TEXT,
+      },
+
+      description: {
+        type: DataTypes.TEXT,
         allowNull: false
+      },
+
+      created_at: {
+        type: DataTypes.DATE
+      },
+
+      updated_at: {
+        type: DataTypes.DATE
+      }
+
     },
-    created_at: {
-        type: Sequelize.DATE,
-    },
-    updated_at: {
-        type: Sequelize.DATE,
+
+    {
+      tableName: "curricula",
+      timestamps: false
     }
-},
 
-{  
+  );
 
-    tableName: 'curricula',
-    timestamps: false  //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-    
-});
+  return Curricula;
 
-module.exports = curricula;
-
+};

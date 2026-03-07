@@ -1,69 +1,61 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require('sequelize');
+// models/curriculum_profiles.js
 
+module.exports = (sequelize, DataTypes) => {
 
-const curricula = require("./curricula");
+  const CurriculumProfiles = sequelize.define(
 
-const curriculum_profiles = db.define(
-  "curriculum_profiles",
-  {
-    id:
+    "CurriculumProfiles",
+
     {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
 
-    curriculum_id:
-    {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: curricula,
-        key: 'id'
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+
+      curriculum_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+      },
+
+      code: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+
+      name: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+
+      type: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+
+      description: {
+        type: DataTypes.TEXT
+      },
+
+      created_at: {
+        type: DataTypes.DATE
+      },
+
+      update_at: {
+        type: DataTypes.DATE
       }
+
     },
 
-    code:
     {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
+      tableName: "curriculum_profiles",
+      timestamps: false
+    }
 
-    name:
-    {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
+  );
 
-    type:
-    {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+  return CurriculumProfiles;
 
-    description:
-    {
-      type: DataTypes.TEXT,
-    },
-
-    created_at:
-    {
-      type: DataTypes.DATE,
-    },
-
-    update_at:
-    {
-      type: DataTypes.DATE,
-    },
-    
-  },
-
-  {
-    tableName: "curriculum_profiles",
-    timestamps: false, //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-  }
-);
-module.exports = curriculum_profiles;
+};

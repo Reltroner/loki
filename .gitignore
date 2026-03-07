@@ -1,0 +1,16 @@
+node_modules/
+.env
+database.sqlite
+*.sqlite
+*.log
+coverage/
+dist/
+build/
+
+# ERD temporary
+database-erd.dot
+database-erd.png
+
+# OS
+.DS_Store
+Thumbs.db

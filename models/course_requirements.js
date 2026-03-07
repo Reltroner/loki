@@ -1,62 +1,52 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require('sequelize');
+// models/course_requirements.js
 
-const courses = require("./courses");
+module.exports = (sequelize, DataTypes) => {
 
-const course_requirements = db.define(
-  "course_requirements",
-  {
-    id:
+  const CourseRequirements = sequelize.define(
+
+    "CourseRequirements",
+
     {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
 
-    course_id:
-    {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: courses,
-        key: 'id'
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+
+      course_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+      },
+
+      required_course_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+      },
+
+      required_level: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+
+      created_at: {
+        type: DataTypes.DATE
+      },
+
+      updated_at: {
+        type: DataTypes.DATE
       }
+
     },
 
-    required_course_id:
     {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: courses,
-        key: 'id'
-      }
-    },
+      tableName: "course_requirements",
+      timestamps: false
+    }
 
-    required_level:
-    {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+  );
 
-    created_at:
-    {
-      type: DataTypes.DATE,
-    },
+  return CourseRequirements;
 
-    updated_at:
-    {
-      type: DataTypes.DATE,
-    },
-
-  },
-
-  {
-    tableName: "course_requirements",
-    timestamps: false, //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-  }
-);
-
-module.exports = course_requirements;
+};

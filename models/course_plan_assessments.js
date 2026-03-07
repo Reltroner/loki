@@ -1,54 +1,57 @@
-//skema orm course_plan_assessments.js
-const db = require("../config/conn");
-const course_plans = require("./course_plans");
-const { Sequelize, DataTypes } = require("sequelize");
+// models/course_plan_assessments.js
 
-const course_plan_assessments = db.define(
-  "course_plan_assessments",
-  {
-    id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
+module.exports = (sequelize, DataTypes) => {
 
-    course_plan_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: course_plans,
-        key: "id",
+  const CoursePlanAssessments = sequelize.define(
+
+    "CoursePlanAssessments",
+
+    {
+
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
       },
+
+      course_plan_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+      },
+
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      percentage: {
+        type: DataTypes.DOUBLE,
+        allowNull: false,
+      },
+
+      flag: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+
+      created_at: {
+        type: DataTypes.DATE,
+      },
+
+      updated_at: {
+        type: DataTypes.DATE,
+      },
+
     },
 
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    {
+      tableName: "course_plan_assessments",
+      timestamps: false,
+    }
 
-    percentage: {
-      type: DataTypes.DOUBLE,
-      allowNull: false,
-    },
+  );
 
-    flag: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+  return CoursePlanAssessments;
 
-    created_at: {
-      type: DataTypes.DATE,
-    },
-
-    updated_at: {
-      type: DataTypes.DATE,
-    },
-  },
-  {
-    tableName: "course_plan_assessments",
-    timestamps: false,
-  }
-);
-
-module.exports = course_plan_assessments;
+};

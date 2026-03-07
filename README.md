@@ -380,14 +380,14 @@ Future architectural improvements could include:
 
 # Contributors
 
-| Name                            | Role     |
-| ------------------------------- | -------- |
-| Nada Safarina                   | Frontend |
-| Dwisuci Insani Karimah          | Frontend |
-| Annisa Ulfa                     | Backend  |
-| Muhammad Rayhan Rizaldi         | Backend  |
-| Boby Darmawan                   | Backend  |
-| Raidan Malik Sandra (Reltroner) | Backend  |
+| Name                                | Role     |
+| ----------------------------------- | -------- |
+| Nada Safarina                       | Frontend |
+| Dwisuci Insani Karimah              | Frontend |
+| Annisa Ulfa                         | Backend  |
+| Muhammad Rayhan Rizaldi             | Backend  |
+| Boby Darmawan                       | Backend  |
+| Raidan Malik Sandra (Rei Reltroner) | Backend  |
 
 ---
 

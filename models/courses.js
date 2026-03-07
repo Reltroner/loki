@@ -1,85 +1,48 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require('sequelize');
+// models/courses.js
 
-const curricula = require("./curricula");
+module.exports = (sequelize, DataTypes) => {
 
-const courses = db.define(
-  "courses",
-  {
-    id:
+  const Courses = sequelize.define(
+
+    "Courses",
+
     {
-        type : DataTypes.BIGINT,
-        allowNull: false,
-        primaryKey : true,
-        autoIncrement: true
+
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+
+      curriculum_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+      },
+
+      code: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+
+      name: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+
+      alias_name: {
+        type: DataTypes.STRING
+      }
+
     },
 
-    curriculum_id:
     {
-        type : DataTypes.BIGINT,
-        allowNull: false,
-        // references: {
-        //     model: curricula,
-        //     key: 'id'
-        // }
-    },
-
-    code:
-    {
-        type : DataTypes.STRING,
-        allowNull: false 
-    }, 
-
-    name:
-    {
-        type : DataTypes.TEXT,
-        allowNull: false 
-    },
-
-    alias_name:
-    {
-        type : DataTypes.TEXT
-    },
-
-    credit:
-    {
-        type : DataTypes.INTEGER,
-        allowNull : false
-    },
-
-    semester:
-    {
-        type : DataTypes.INTEGER,
-        allowNull : false
-    },
-
-    description:
-    {
-        type : DataTypes.TEXT
-    },
-
-    created_at:
-    {
-        type : DataTypes.DATE,
-    },
-
-    updated_at:
-    {
-        type : DataTypes.DATE,
+      tableName: "courses",
+      timestamps: false
     }
-  },
 
-  {
+  );
 
-    tableName: "courses",
-    timestamps: false, //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-  }
-);
+  return Courses;
 
-courses.hasOne(curricula);
-courses.belongsTo(curricula, { foreignKey:'curriculum_id'});
-
-
-
-module.exports = courses;
+};

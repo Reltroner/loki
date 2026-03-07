@@ -1,51 +1,47 @@
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require("sequelize");
+// models/course_plan_detail_outcomes.js
 
-const course_plans_details = require("./course_plan_details");
-const course_los = require("./course_los");
+module.exports = (sequelize, DataTypes) => {
 
-const course_plan_detail_outcomes = db.define(
-  "course_plan_detail_outcomes",
-  {
-    id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
+  const CoursePlanDetailOutcomes = sequelize.define(
 
-    course_plan_detail_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: course_plans_details,
-        key: "id",
+    "CoursePlanDetailOutcomes",
+
+    {
+
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
       },
-    },
 
-    course_lo_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: course_los,
-        key: "id",
+      course_plan_detail_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
       },
+
+      course_lo_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+      },
+
+      created_at: {
+        type: DataTypes.DATE,
+      },
+
+      updated_at: {
+        type: DataTypes.DATE,
+      },
+
     },
 
-    created_at: {
-      type: DataTypes.DATE,
-    },
+    {
+      tableName: "course_plan_detail_outcomes",
+      timestamps: false,
+    }
 
-    updated_at: {
-      type: DataTypes.DATE,
-    },
-  },
+  );
 
-  {
-    tableName: "course_plan_detail_outcomes",
-    timestamps: false, //Karena created_at dan update_at akan dibuat otomatis oleh sequelize
-    // freezeTableName: true
-  }
-);
+  return CoursePlanDetailOutcomes;
 
-module.exports = course_plan_detail_outcomes;
+};

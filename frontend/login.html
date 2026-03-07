@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- frontend/login.html -->
 <html lang="en">
   <head>
     <title>Login V5</title>
@@ -18,26 +19,22 @@
         <div class="wrap-login100">
           <img src="img/logounand.png" alt="logo unand" class="login100-form-title" />
 
-          <form class="login100-form validate-form flex-sb flex-w">
-            <div class="p-t-31">
-              <h4 class="txt1">Username</h4>
-            </div>
-            <div class="wrap-input100 validate-input" data-validate="Username is required">
-              <input class="input100" type="text" name="username" />
-              <span class="focus-input100"></span>
-            </div>
-            <div class="p-t-13">
-              <h4 class="txt1">Password</h4>
-            </div>
-            <div class="wrap-input100 validate-input" data-validate="Password is required">
-              <input class="input100" type="password" name="pass" />
-              <span class="focus-input100"></span>
-            </div>
-            <a href="#" class="txt2 bo1 m-l-5"> Forgot Password? </a>
+          <form action="/auth/login" method="POST">
 
-            <div class="container-login100-form-btn m-t-30">
-              <button class="login100-form-btn">LOGIN</button>
+            <div class="wrap-input100">
+              <input class="input100" type="email" name="email" placeholder="Email">
             </div>
+
+            <div class="wrap-input100">
+              <input class="input100" type="password" name="password" placeholder="Password">
+            </div>
+
+            <div class="container-login100-form-btn">
+              <button class="login100-form-btn">
+                LOGIN
+              </button>
+            </div>
+
           </form>
         </div>
       </div>

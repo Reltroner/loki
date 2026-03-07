@@ -1,66 +1,62 @@
-// skema orm course_plan_detail_refs
-const db = require("../config/conn");
-const { Sequelize, DataTypes } = require("sequelize");
+// models/course_plan_details.js
 
-const course_plans = require("./course_plans");
-const course_plan_assessments = require("./course_plan_assessments");
-const course_plan_detail_assessments = require("./course_plan_detail_assessments");
+module.exports = (sequelize, DataTypes) => {
 
-const course_plan_details = db.define(
-  "course_plan_details",
-  {
-    id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
+  const CoursePlanDetails = sequelize.define(
 
-    course_plan_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: course_plans,
-        key: "id",
+    "CoursePlanDetails",
+
+    {
+
+      id: {
+        type: DataTypes.BIGINT,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
       },
+
+      course_plan_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+      },
+
+      week: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+
+      material: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+
+      method: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+
+      student_experience: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+
+      created_at: {
+        type: DataTypes.DATE,
+      },
+
+      updated_at: {
+        type: DataTypes.DATE,
+      },
+
     },
 
-    week: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+    {
+      tableName: "course_plan_details",
+      timestamps: false,
+    }
 
-    material: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
+  );
 
-    method: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
+  return CoursePlanDetails;
 
-    student_experience: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-
-    created_at: {
-      type: DataTypes.DATE,
-    },
-
-    updated_at: {
-      type: DataTypes.DATE,
-    },
-  },
-
-  {
-    tableName: "course_plan_details",
-    timestamps: false,
-  }
-);
-
-course_plan_details.belongsToMany(course_plan_assessments, { through: course_plan_detail_assessments, foreignKey: "course_plan_detail_id" });
-course_plan_assessments.belongsToMany(course_plan_details, { through: course_plan_detail_assessments, foreignKey: "course_plan_assessment_id" });
-
-module.exports = course_plan_details;
+};

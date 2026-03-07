@@ -1,23 +1,22 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "minimarket",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "sqlite",
+    "storage": "./database.sqlite",
+    "logging": false
   },
+
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "sqlite",
+    "storage": ":memory:",
+    "logging": false
   },
+
   "production": {
     "username": "root",
     "password": null,
-    "database": "database_production",
+    "database": "loki",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "logging": false
   }
 }

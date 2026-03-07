@@ -1,29 +1,91 @@
+// routes/admin.js
+
 const express = require("express");
-const { coursesAdmin, cetakListRps, getCourseAdmin } = require("../controller/course_plan");
-const { getDosen, tambahDosen, hapusDosen } = require("../controller/course_plan_lecturers");
-const { cetak, getPeta } = require("../controller/course_lo_details");
+
+const coursePlanController = require("../controllers/coursePlanController");
+const coursePlanLecturerController = require("../controllers/coursePlanLecturerController");
+const courseLoDetailController = require("../controllers/courseLoDetailController");
+
+const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
 const router = express.Router();
-router.use(express.static("public"));
 
-router.use("/", (req, res, next) => {
-  const role = req.cookies.type;
-  if (role != "T") return res.render("err403");
-  next();
-});
+/*
+|--------------------------------------------------------------------------
+| Authentication + Authorization
+|--------------------------------------------------------------------------
+*/
 
-router.get("/coursesPlan", coursesAdmin);
-router.get("/coursesPlan/:id/:rev", getDosen);
-router.post("/tambahDosen", tambahDosen);
-router.delete("/hapusdosen/:id", hapusDosen);
-router.get("/coursesPlan/:id/:rev/cetakRps", getCourseAdmin);
+router.use(authMiddleware);
+router.use(roleMiddleware("T")); // T = Admin
+
+/*
+|--------------------------------------------------------------------------
+| Course Plan Management
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/coursesPlan",
+  coursePlanController.coursesAdmin
+);
+
+router.get(
+  "/coursesPlan/:id/:rev",
+  coursePlanLecturerController.getDosen
+);
+
+router.post(
+  "/tambahDosen",
+  coursePlanLecturerController.tambahDosen
+);
+
+router.delete(
+  "/hapusdosen/:id",
+  coursePlanLecturerController.hapusDosen
+);
+
+router.get(
+  "/coursesPlan/:id/:rev/cetakRps",
+  coursePlanController.getCourseAdmin
+);
+
+/*
+|--------------------------------------------------------------------------
+| RPS Analytics
+|--------------------------------------------------------------------------
+*/
+
 router.get("/persentaseRps", (req, res) => {
   res.render("admin/persentaseRps");
 });
 
-router.get("/petaCplCpmk/:id/:rev", getPeta);
+/*
+|--------------------------------------------------------------------------
+| CPL CPMK Mapping
+|--------------------------------------------------------------------------
+*/
 
-router.get("/cetakCplCpmk/:id/:rev", cetak);
+router.get(
+  "/petaCplCpmk/:id/:rev",
+  courseLoDetailController.getPeta
+);
 
-router.get("/cetakListRps", cetakListRps);
+router.get(
+  "/cetakCplCpmk/:id/:rev",
+  courseLoDetailController.cetak
+);
+
+/*
+|--------------------------------------------------------------------------
+| Print
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/cetakListRps",
+  coursePlanController.cetakListRps
+);
+
 module.exports = router;
