@@ -17,11 +17,17 @@
     "db:check": "node scripts/db-check.js",
     "query:analyze": "node scripts/query-inspector.js",
     "index:audit": "node scripts/index-analyzer.js",
-    "arch:scan": "node scripts/architecture-scan.js"
+    "arch:scan": "node scripts/architecture-scan.js",
+    "smoke:test": "node scripts/smoke-test.js",
+    "arch:diagram": "node scripts/architecture-diagram.js",
+    "arch:deps": "node scripts/module-deps.js",
+    "route:audit": "node scripts/route-audit.js",
+    "arch:score": "node scripts/architecture-score.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.13.6",
     "bcrypt": "^6.0.0",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",

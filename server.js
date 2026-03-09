@@ -12,7 +12,8 @@ const models = require("./models");
 const mahasiswaRoutes = require("./routes/mahasiswa");
 const dosenRoutes = require("./routes/dosen");
 const adminRoutes = require("./routes/admin");
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./modules/auth/authRoutes");
+const loadModules = require("./scripts/module-loader");
 
 const { authenticateToken, checkUser } = require("./middleware/verifyToken");
 
@@ -67,7 +68,6 @@ function createApp() {
   |--------------------------------------------------------------------------
   */
 
-  app.use("/auth", authRoutes);
   app.use("/mahasiswa", mahasiswaRoutes);
   app.use("/dosen", dosenRoutes);
   app.use("/admin", adminRoutes);
@@ -91,6 +91,10 @@ function createApp() {
   | Health Check
   |--------------------------------------------------------------------------
   */
+
+  app.use(express.json());
+
+  loadModules(app);
 
   app.get("/health", (req, res) => {
     res.json({

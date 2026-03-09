@@ -1,0 +1,9 @@
+
+digraph ModuleDependencies {
+
+rankdir=LR
+node [shape=box style=filled fillcolor="#E8F0FF"]
+
+  auth -> Models;
+
+}

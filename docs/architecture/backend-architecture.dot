@@ -1,0 +1,21 @@
+
+digraph BackendArchitecture {
+
+rankdir=LR
+
+node [shape=box style=filled fillcolor="#EFEFFF"]
+
+Routes        [label="Routes"]
+Controllers   [label="Controllers"]
+Services      [label="Services"]
+Repositories  [label="Repositories"]
+Models        [label="Models"]
+Database      [label="Database"]
+
+Routes -> Controllers
+Controllers -> Services
+Services -> Repositories
+Repositories -> Models
+Models -> Database
+
+}
