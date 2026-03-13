@@ -1,19 +1,18 @@
 // middleware/roleMiddleware.js
 
-const roleMiddleware = (...allowedRoles) => {
+module.exports = function requireRole(role) {
 
   return (req, res, next) => {
 
-    const userRole = req.user?.type;
+    if (!req.user) {
+      return res.redirect("/auth/login");
+    }
 
-    if (!allowedRoles.includes(userRole)) {
+    if (req.user.role !== role) {
       return res.status(403).render("err403");
     }
 
     next();
-
   };
 
 };
-
-module.exports = roleMiddleware;

@@ -6,19 +6,20 @@ const coursePlanController = require("../controllers/coursePlanController");
 const coursePlanLecturerController = require("../controllers/coursePlanLecturerController");
 const courseLoDetailController = require("../controllers/courseLoDetailController");
 
-const authMiddleware = require("../middleware/authMiddleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
+const { authenticateToken } = require("../middleware/verifyToken");
+const requireRole = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Authentication + Authorization
+| Security Layer
 |--------------------------------------------------------------------------
+| JWT authentication + admin authorization
 */
 
-router.use(authMiddleware);
-router.use(roleMiddleware("T")); // T = Admin
+router.use(authenticateToken);
+router.use(requireRole("admin"));
 
 /*
 |--------------------------------------------------------------------------
@@ -26,25 +27,13 @@ router.use(roleMiddleware("T")); // T = Admin
 |--------------------------------------------------------------------------
 */
 
-router.get(
-  "/coursesPlan",
-  coursePlanController.coursesAdmin
-);
+router.get("/coursesPlan", coursePlanController.coursesAdmin);
 
-router.get(
-  "/coursesPlan/:id/:rev",
-  coursePlanLecturerController.getDosen
-);
+router.get("/coursesPlan/:id/:rev", coursePlanLecturerController.getDosen);
 
-router.post(
-  "/tambahDosen",
-  coursePlanLecturerController.tambahDosen
-);
+router.post("/tambahDosen", coursePlanLecturerController.tambahDosen);
 
-router.delete(
-  "/hapusdosen/:id",
-  coursePlanLecturerController.hapusDosen
-);
+router.delete("/hapusdosen/:id", coursePlanLecturerController.hapusDosen);
 
 router.get(
   "/coursesPlan/:id/:rev/cetakRps",

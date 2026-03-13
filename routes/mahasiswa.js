@@ -4,19 +4,20 @@ const express = require("express");
 
 const coursePlanController = require("../controllers/coursePlanController");
 
-const authMiddleware = require("../middleware/authMiddleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
+const { authenticateToken } = require("../middleware/verifyToken");
+const requireRole = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Authentication
+| Security Layer
 |--------------------------------------------------------------------------
+| JWT authentication + mahasiswa authorization
 */
 
-router.use(authMiddleware);
-router.use(roleMiddleware("M")); // Mahasiswa
+router.use(authenticateToken);
+router.use(requireRole("mahasiswa"));
 
 /*
 |--------------------------------------------------------------------------

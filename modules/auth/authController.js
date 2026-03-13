@@ -32,21 +32,47 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
 
-    const token = await authService.loginUser(req.body)
+    const data = await authService.loginUser(req.body)
 
-    res.json({ token })
+    // API request
+    if (req.headers["content-type"] === "application/json") {
+      return res.json(data)
+    }
+
+    // set cookie for EJS session
+    res.cookie("jwt", data.token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000
+    })
+
+    // role redirect
+    const role = data.user.role
+
+    if (role === "admin")
+      return res.redirect("/admin/coursesPlan")
+
+    if (role === "dosen")
+      return res.redirect(`/dosen/${data.user.id}/courses`)
+
+    if (role === "mahasiswa")
+      return res.redirect("/mahasiswa/home")
+
+    res.redirect("/")
 
   } catch (err) {
 
-    res.status(401).json({
+    res.status(401).render("login", {
       error: err.message
     })
 
   }
+  console.log("LOGIN USER ROLE:", data.user.role)
 }
 
 exports.logout = (req, res) => {
-  res.json({
-    message: "Logout success"
-  })
-}
+
+  res.clearCookie("jwt");
+
+  res.redirect("/auth/login");
+
+};

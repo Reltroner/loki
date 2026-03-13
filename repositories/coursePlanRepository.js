@@ -32,7 +32,7 @@ const BASE_ATTRIBUTES = [
 const BASE_INCLUDE = () => [
   {
     model: Courses,
-    attributes: ["name", "semester", "curriculum_id"],
+    attributes: ["name", "curriculum_id"],
     required: true,
   },
   {
