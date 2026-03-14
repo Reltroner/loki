@@ -49,15 +49,15 @@ exports.login = async (req, res) => {
     const role = data.user.role
 
     if (role === "admin")
-      return res.redirect("/admin/coursesPlan")
+    return res.redirect("/admin/dashboard");
 
     if (role === "dosen")
-      return res.redirect(`/dosen/${data.user.id}/courses`)
+      return res.redirect(`/dosen/${data.user.id}/courses`);
 
     if (role === "mahasiswa")
-      return res.redirect("/mahasiswa/home")
+      return res.redirect("/mahasiswa/home");
 
-    res.redirect("/")
+    res.redirect("/");
 
   } catch (err) {
 
@@ -66,7 +66,6 @@ exports.login = async (req, res) => {
     })
 
   }
-  console.log("LOGIN USER ROLE:", data.user.role)
 }
 
 exports.logout = (req, res) => {

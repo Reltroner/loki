@@ -1,0 +1,29 @@
+<!-- views/admin/dashboard.ejs -->
+
+<%- include('../partials/sidebar'); -%>
+
+<div id="container">
+
+<h2>Admin Dashboard</h2>
+
+<div class="row">
+
+<div class="col-md-3">
+<div class="card">
+<h5>Total Courses</h5>
+<p><%= stats.courses %></p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card">
+<h5>Total Lecturers</h5>
+<p><%= stats.lecturers %></p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<%- include('../partials/footer'); -%>

@@ -1,7 +1,7 @@
 // routes/admin.js
 
 const express = require("express");
-
+const { Courses, CoursePlans, Lecturers } = require("../models");
 const coursePlanController = require("../controllers/coursePlanController");
 const coursePlanLecturerController = require("../controllers/coursePlanLecturerController");
 const courseLoDetailController = require("../controllers/courseLoDetailController");
@@ -20,6 +20,22 @@ const router = express.Router();
 
 router.use(authenticateToken);
 router.use(requireRole("admin"));
+
+router.get("/dashboard", async (req, res, next) => {
+  try {
+
+    const stats = {
+      courses: await Courses.count(),
+      coursePlans: await CoursePlans.count(),
+      lecturers: await Lecturers.count()
+    };
+
+    res.render("admin/dashboard", { stats });
+
+  } catch (err) {
+    next(err);
+  }
+});
 
 /*
 |--------------------------------------------------------------------------
