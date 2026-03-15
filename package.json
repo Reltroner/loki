@@ -22,7 +22,11 @@
     "arch:diagram": "node scripts/architecture-diagram.js",
     "arch:deps": "node scripts/module-deps.js",
     "route:audit": "node scripts/route-audit.js",
-    "arch:score": "node scripts/architecture-score.js"
+    "arch:score": "node scripts/architecture-score.js",
+    "dev": "node server.js",
+    "db:init": "node scripts/init-db.js",
+    "db:seed": "node scripts/seed-data.js",
+    "db:reset": "node scripts/reset-db.js"
   },
   "author": "",
   "license": "ISC",

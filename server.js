@@ -54,6 +54,7 @@ function createApp() {
   app.use(methodOverride("_method"));
 
   app.use(express.static(path.join(__dirname, "public")));
+  app.use(require("./middleware/requestLogger"));
 
   /*
   |----------------------------------------------------------------------
@@ -135,8 +136,11 @@ function createApp() {
   */
 
   app.use((err, req, res, next) => {
-    console.error("Application Error:", err);
-    res.status(500).render("err500");
+    console.error(err);
+
+    res.status(500).render("err500", {
+      error: err.message
+    });
   });
 
   return app;
