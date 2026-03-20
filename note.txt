@@ -667,3 +667,4 @@ route conflict detection
 
 ---
 
+powershell -ExecutionPolicy Bypass -File C:\Users\Reltropolis\copilot.ps1

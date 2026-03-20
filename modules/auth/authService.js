@@ -29,7 +29,11 @@ exports.registerUser = async ({ name, email, password }) => {
 
 exports.loginUser = async ({ email, password }) => {
 
+  console.log("LOGIN EMAIL:", email);
+
   const user = await userRepository.findUserByEmail(email);
+
+  console.log("DB USER:", user);
 
   if (!user) {
     throw new Error("User not found");

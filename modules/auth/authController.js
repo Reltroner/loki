@@ -3,11 +3,11 @@
 const authService = require("./authService")
 
 exports.registerPage = (req, res) => {
-  res.render("register")
+  return res.render("register")
 }
 
 exports.loginPage = (req, res) => {
-  res.render("login")
+  return res.render("login")
 }
 
 exports.register = async (req, res) => {
@@ -15,14 +15,14 @@ exports.register = async (req, res) => {
 
     const user = await authService.registerUser(req.body)
 
-    res.json({
+    return res.json({
       message: "User registered",
       user
     })
 
   } catch (err) {
 
-    res.status(500).json({
+    return res.status(500).json({
       error: err.message
     })
 
@@ -30,6 +30,10 @@ exports.register = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
+
+  // DEBUG (deterministic placement)
+  console.log("LOGIN BODY:", req.body)
+
   try {
 
     const data = await authService.loginUser(req.body)
@@ -45,23 +49,25 @@ exports.login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000
     })
 
-    // role redirect
     const role = data.user.role
 
-    if (role === "admin")
-    return res.redirect("/admin/dashboard");
+    if (role === "admin") {
+      return res.redirect("/admin/dashboard")
+    }
 
-    if (role === "dosen")
-      return res.redirect(`/dosen/${data.user.id}/courses`);
+    if (role === "dosen") {
+      return res.redirect(`/dosen/${data.user.id}/courses`)
+    }
 
-    if (role === "mahasiswa")
-      return res.redirect("/mahasiswa/home");
+    if (role === "mahasiswa") {
+      return res.redirect("/mahasiswa/home")
+    }
 
-    res.redirect("/");
+    return res.redirect("/")
 
   } catch (err) {
 
-    res.status(401).render("login", {
+    return res.status(401).render("login", {
       error: err.message
     })
 
@@ -70,8 +76,8 @@ exports.login = async (req, res) => {
 
 exports.logout = (req, res) => {
 
-  res.clearCookie("jwt");
+  res.clearCookie("jwt")
 
-  res.redirect("/auth/login");
+  return res.redirect("/auth/login")
 
-};
+}
