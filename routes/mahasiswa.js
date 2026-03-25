@@ -4,20 +4,20 @@ const express = require("express");
 
 const coursePlanController = require("../controllers/coursePlanController");
 
-const { authenticateToken } = require("../middleware/verifyToken");
-const requireRole = require("../middleware/roleMiddleware");
+// ✅ NEW (MODULE-BASED AUTH)
+const { authenticate } = require("../modules/auth/middleware/authenticate");
+const { authorize } = require("../modules/auth/middleware/authorize");
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Security Layer
+| Security Layer (MODULE BASED — CLEAN)
 |--------------------------------------------------------------------------
-| JWT authentication + mahasiswa authorization
 */
 
-router.use(authenticateToken);
-router.use(requireRole("mahasiswa"));
+router.use(authenticate);
+router.use(authorize("mahasiswa"));
 
 /*
 |--------------------------------------------------------------------------

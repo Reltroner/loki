@@ -1,6 +1,6 @@
 // middleware/userContext.js
 
-const { roleToType } = require("../utils/roleMapper");
+const { normalizeRole } = require("../modules/auth/utils/roleMapper");
 
 module.exports = (req, res, next) => {
 
@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     id: req.user.id,
     name: req.user.name,
     role: req.user.role,
-    type: roleToType[req.user.role] || null
+    type: normalizeRole(req.user) || null
   };
 
   next();

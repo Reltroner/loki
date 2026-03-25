@@ -16,10 +16,21 @@ const assert = (condition, message) => {
 
 const normalizeTerm = (term) => {
   if (!term) return null;
+
   const value = String(term).trim();
+
   return value.length === 0 ? null : value;
 };
 
+const toNumber = (value, name) => {
+  const num = Number(value);
+
+  if (Number.isNaN(num)) {
+    throw new Error(`${name} must be numeric`);
+  }
+
+  return num;
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +41,11 @@ const normalizeTerm = (term) => {
 const getCoursePlan = async (courseId, rev) => {
 
   assert(courseId, "courseId is required");
-  assert(rev, "rev is required");
+  assert(rev !== undefined, "rev is required");
 
-  const result = await repository.findCoursePlan(courseId, rev);
+  const revision = toNumber(rev, "rev");
+
+  const result = await repository.findCoursePlan(courseId, revision);
 
   if (!Array.isArray(result) || result.length === 0) {
     return null;
@@ -41,7 +54,6 @@ const getCoursePlan = async (courseId, rev) => {
   return result;
 
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -59,12 +71,13 @@ const getCoursesAdmin = async () => {
 
   /*
   Deduplicate berdasarkan course_id
-  karena satu course memiliki banyak revision
   */
 
   const map = new Map();
 
   for (const item of results) {
+
+    if (!item?.course_id) continue;
 
     if (!map.has(item.course_id)) {
       map.set(item.course_id, item);
@@ -75,7 +88,6 @@ const getCoursesAdmin = async () => {
   return Array.from(map.values());
 
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +113,6 @@ const searchCoursePlan = async (term) => {
 
 };
 
-
 /*
 |--------------------------------------------------------------------------
 | UPDATE COURSE PLAN
@@ -111,16 +122,17 @@ const searchCoursePlan = async (term) => {
 const updateCoursePlan = async (courseId, rev, payload = {}) => {
 
   assert(courseId, "courseId is required");
-  assert(rev, "rev is required");
+  assert(rev !== undefined, "rev is required");
+
+  const revision = toNumber(rev, "rev");
 
   return repository.updateCoursePlan(
     courseId,
-    rev,
+    revision,
     payload
   );
 
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -133,16 +145,16 @@ const createRevision = async (payload = {}) => {
   assert(payload.course_id, "course_id is required");
   assert(payload.rev !== undefined, "rev is required");
 
-  const revision = Number(payload.rev);
+  const revision = toNumber(payload.rev, "rev");
 
-  assert(!Number.isNaN(revision), "rev must be numeric");
+  const nextPayload = {
+    ...payload,
+    rev: revision + 1
+  };
 
-  payload.rev = revision + 1;
-
-  return repository.createRevision(payload);
+  return repository.createRevision(nextPayload);
 
 };
-
 
 /*
 |--------------------------------------------------------------------------

@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const userRepository = require("./authRepository");
-const { normalizeRole } = require("../../utils/roleMapper");
+const { normalizeRole } = require("./utils/roleMapper");
 
 exports.registerUser = async ({ name, email, password }) => {
 

@@ -46,8 +46,9 @@ exports.login = async (req, res) => {
     // set cookie for EJS session
     res.cookie("jwt", data.token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000
-    })
+      sameSite: "lax",
+      path: "/"
+    });
 
     const role = data.user.role
 

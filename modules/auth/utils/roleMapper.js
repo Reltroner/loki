@@ -1,4 +1,4 @@
-// utils/roleMapper.js
+// modules/auth/utils/roleMapper.js
 
 const typeToRole = {
   T: "admin",

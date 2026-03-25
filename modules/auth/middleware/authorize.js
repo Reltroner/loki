@@ -1,11 +1,10 @@
-// middleware/roleMiddleware.js
+// modules/auth/middleware/authorize.js
 
-module.exports = function requireRole(role) {
-
+const authorize = (role) => {
   return (req, res, next) => {
 
     if (!req.user) {
-      return res.redirect("/auth/login");
+      return res.status(401).render("err401");
     }
 
     if (req.user.role !== role) {
@@ -14,5 +13,6 @@ module.exports = function requireRole(role) {
 
     next();
   };
-
 };
+
+module.exports = { authorize };

@@ -1,35 +1,34 @@
 // routes/admin.js
 
 const express = require("express");
-const { Courses, CoursePlans, Lecturers } = require("../models");
+
 const coursePlanController = require("../controllers/coursePlanController");
 const coursePlanLecturerController = require("../controllers/coursePlanLecturerController");
 const courseLoDetailController = require("../controllers/courseLoDetailController");
-const dashboardService = require("../services/dashboardService");
 
-const { authenticateToken } = require("../middleware/verifyToken");
-const requireRole = require("../middleware/roleMiddleware");
+const dashboardController = require("../controllers/dashboardController");
+
+const { authenticate } = require("../modules/auth/middleware/authenticate");
+const { authorize } = require("../modules/auth/middleware/authorize");
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Security Layer
+| Security Layer (NEW — MODULE BASED)
 |--------------------------------------------------------------------------
-| JWT authentication + admin authorization
 */
 
-router.use(authenticateToken);
-router.use(requireRole("admin"));
+router.use(authenticate);
+router.use(authorize("admin"));
 
-router.get("/dashboard", async (req, res, next) => {
-  try {
-    const stats = await dashboardService.getAdminStats();
-    res.render("admin/dashboard", { stats });
-  } catch (err) {
-    next(err);
-  }
-});
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+router.get("/dashboard", dashboardController.getAdminDashboard);
 
 /*
 |--------------------------------------------------------------------------

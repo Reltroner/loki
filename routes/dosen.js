@@ -10,79 +10,111 @@ const coursePlanDetailController = require("../controllers/coursePlanDetailContr
 const coursePlanReferenceController = require("../controllers/coursePlanReferenceController");
 const coursePlanAssessmentController = require("../controllers/coursePlanAssessmentController");
 
-const { authenticateToken } = require("../middleware/verifyToken");
-const requireRole = require("../middleware/roleMiddleware");
+// ✅ NEW (MODULE-BASED AUTH)
+const { authenticate } = require("../modules/auth/middleware/authenticate");
+const { authorize } = require("../modules/auth/middleware/authorize");
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Security Layer
+| Security Layer (MODULE BASED — CLEAN)
 |--------------------------------------------------------------------------
-| JWT authentication + dosen authorization
 */
 
-router.use(authenticateToken);
-router.use(requireRole("dosen"));
+router.use(authenticate);
+router.use(authorize("dosen"));
 
 /*
 |--------------------------------------------------------------------------
-| Course
+| COURSE
 |--------------------------------------------------------------------------
 */
 
 router.get("/:dosenId/courses", coursesController.getAllCourses);
-
 router.get("/add-course", coursesController.getMatkul);
-
 router.post("/add-course", coursesController.createCourse);
 
 /*
 |--------------------------------------------------------------------------
-| Course Plan
+| COURSE PLAN (NEW STANDARD)
 |--------------------------------------------------------------------------
 */
-
-router.get("/coursesPlan/:coursePlanId/:rev", coursePlanController.getCourses);
-
-router.put("/coursesPlan/:coursePlanId/:rev/edit", coursePlanController.updateCoursePlan);
-
-router.get("/coursesPlan/:coursePlanId/:rev/edit", coursePlanController.editCoursePlan);
-
-router.post("/coursesPlan/:coursePlanId/:rev/revisi", coursePlanController.revisi);
-
-router.get("/coursesPlan/:coursePlanId/:rev/revisi", coursePlanController.revisiRps);
-
-router.get("/:coursePlanId/:rev/cetakRps", coursePlanController.cetakRps);
-
-/*
-|--------------------------------------------------------------------------
-| CPMK
-|--------------------------------------------------------------------------
-*/
-
-router.get("/:coursePlanId/:rev/CPMK", courseLosController.getCourseLos);
-
-router.get("/:coursePlanId/:rev/add-cpmk", (req, res) => {
-  res.render("dosen/add_cpmk");
-});
-
-router.post("/:coursePlanId/:rev/add-cpmk", courseLosController.createCourseLos);
 
 router.get(
-  "/:coursePlanId/:rev/edit-cpmk/:cpmkId",
-  courseLosController.getCourseLosById
+  "/course-plans/:coursePlanId/revisions/:rev",
+  coursePlanController.getCourses
 );
 
 router.put(
-  "/:coursePlanId/:rev/edit-cpmk/:cpmkId",
+  "/course-plans/:coursePlanId/revisions/:rev",
+  coursePlanController.updateCoursePlan
+);
+
+router.get(
+  "/course-plans/:coursePlanId/revisions/:rev/edit",
+  coursePlanController.editCoursePlan
+);
+
+router.post(
+  "/course-plans/:coursePlanId/revisions/:rev/revisions",
+  coursePlanController.revisi
+);
+
+router.get(
+  "/course-plans/:coursePlanId/revisions/:rev/revisions",
+  coursePlanController.revisiRps
+);
+
+router.get(
+  "/course-plans/:coursePlanId/revisions/:rev/print",
+  coursePlanController.cetakRps
+);
+
+// ⚠️ LEGACY (TEMPORARY)
+router.get(
+  "/coursesPlan/:coursePlanId/:rev",
+  coursePlanController.getCourses
+);
+
+router.put(
+  "/coursesPlan/:coursePlanId/:rev/edit",
+  coursePlanController.updateCoursePlan
+);
+
+/*
+|--------------------------------------------------------------------------
+| CPMK (CourseLos)
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/course-plans/:coursePlanId/cpmk",
+  courseLosController.getCourseLos
+);
+
+router.post(
+  "/course-plans/:coursePlanId/cpmk",
+  courseLosController.createCourseLos
+);
+
+router.put(
+  "/course-plans/:coursePlanId/cpmk/:cpmkId",
   courseLosController.updateCourseLos
 );
 
 router.delete(
-  "/:coursePlanId/:rev/CPMK/:cpmkId",
+  "/course-plans/:coursePlanId/cpmk/:cpmkId",
   courseLosController.deleteCourseLos
 );
+
+router.get(
+  "/course-plans/:coursePlanId/cpmk/:cpmkId",
+  courseLosController.getCourseLosById
+);
+
+// ⚠️ LEGACY
+router.get("/:coursePlanId/:rev/CPMK", courseLosController.getCourseLos);
 
 /*
 |--------------------------------------------------------------------------
@@ -90,97 +122,105 @@ router.delete(
 |--------------------------------------------------------------------------
 */
 
-router.get("/:coursePlanId/:rev/cpl/:clId", courseLoDetailController.getCurriculumLos);
+router.get(
+  "/course-plans/:coursePlanId/cpl/:clId",
+  courseLoDetailController.getCurriculumLos
+);
 
 router.delete("/cpl/:mappingId", courseLoDetailController.hapusCP);
-
 router.post("/cpl/tambah", courseLoDetailController.tambahCP);
 
 /*
 |--------------------------------------------------------------------------
-| Pertemuan Mingguan
+| PERTEMUAN
 |--------------------------------------------------------------------------
 */
 
-router.get("/:coursePlanId/:rev/pertemuan", coursePlanDetailController.getDetail);
+router.get(
+  "/course-plans/:coursePlanId/details",
+  coursePlanDetailController.getDetail
+);
 
-router.get("/:coursePlanId/:rev/add-pertemuan", (req, res) => {
-  res.render("dosen/add_pertemuan");
-});
+router.post(
+  "/course-plans/:coursePlanId/details",
+  coursePlanDetailController.createDetail
+);
 
-router.post("/:coursePlanId/:rev/add-pertemuan", coursePlanDetailController.createDetail);
+router.put(
+  "/course-plans/:coursePlanId/details/:detailId",
+  coursePlanDetailController.updateDetail
+);
 
 router.delete(
-  "/:coursePlanId/:rev/pertemuan/:detailId",
+  "/course-plans/:coursePlanId/details/:detailId",
   coursePlanDetailController.deleteDetail
 );
 
 router.get(
-  "/:coursePlanId/:rev/edit-pertemuan/:detailId",
+  "/course-plans/:coursePlanId/details/:detailId",
   coursePlanDetailController.getDetailById
-);
-
-router.put(
-  "/:coursePlanId/:rev/edit-pertemuan/:detailId",
-  coursePlanDetailController.updateDetail
 );
 
 /*
 |--------------------------------------------------------------------------
-| Reference
+| REFERENCES
 |--------------------------------------------------------------------------
 */
 
-router.get("/:coursePlanId/:rev/referensi", coursePlanReferenceController.getReferences);
+router.get(
+  "/course-plans/:coursePlanId/references",
+  coursePlanReferenceController.getReferences
+);
 
-router.get("/:coursePlanId/:rev/add-referensi", (req, res) => {
-  res.render("dosen/add_referensi");
-});
+router.post(
+  "/course-plans/:coursePlanId/references",
+  coursePlanReferenceController.createReference
+);
 
-router.post("/:coursePlanId/:rev/add-referensi", coursePlanReferenceController.createReference);
+router.put(
+  "/course-plans/:coursePlanId/references/:referenceId",
+  coursePlanReferenceController.updateReference
+);
 
 router.delete(
-  "/:coursePlanId/:rev/referensi/:referenceId",
+  "/course-plans/:coursePlanId/references/:referenceId",
   coursePlanReferenceController.deleteReference
 );
 
 router.get(
-  "/:coursePlanId/:rev/edit-referensi/:referenceId",
+  "/course-plans/:coursePlanId/references/:referenceId",
   coursePlanReferenceController.getReferenceById
-);
-
-router.put(
-  "/:coursePlanId/:rev/edit-referensi/:referenceId",
-  coursePlanReferenceController.updateReference
 );
 
 /*
 |--------------------------------------------------------------------------
-| Penilaian
+| ASSESSMENTS
 |--------------------------------------------------------------------------
 */
 
-router.get("/:coursePlanId/:rev/penilaian", coursePlanAssessmentController.getAssessments);
+router.get(
+  "/course-plans/:coursePlanId/assessments",
+  coursePlanAssessmentController.getAssessments
+);
 
-router.get("/:coursePlanId/:rev/add-penilaian", (req, res) => {
-  res.render("dosen/add_penilaian");
-});
+router.post(
+  "/course-plans/:coursePlanId/assessments",
+  coursePlanAssessmentController.createAssessments
+);
 
-router.post("/:coursePlanId/:rev/add-penilaian", coursePlanAssessmentController.createAssessments);
+router.put(
+  "/course-plans/:coursePlanId/assessments/:assessmentId",
+  coursePlanAssessmentController.updateAssessments
+);
 
 router.delete(
-  "/:coursePlanId/:rev/penilaian/:assessmentId",
+  "/course-plans/:coursePlanId/assessments/:assessmentId",
   coursePlanAssessmentController.deleteAssessments
 );
 
 router.get(
-  "/:coursePlanId/:rev/edit-penilaian/:assessmentId",
+  "/course-plans/:coursePlanId/assessments/:assessmentId",
   coursePlanAssessmentController.getAssessmentsById
-);
-
-router.put(
-  "/:coursePlanId/:rev/edit-penilaian/:assessmentId",
-  coursePlanAssessmentController.updateAssessments
 );
 
 module.exports = router;

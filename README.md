@@ -2,24 +2,15 @@
 
 ### Academic Course Plan (RPS) Platform
 
-A role-based **RPS (Rencana Pembelajaran Semester) management platform** built with **Node.js, Express, MySQL, and EJS**, designed to digitize the creation, management, and distribution of course plans in higher education institutions.
+A role-based **RPS (Rencana Pembelajaran Semester) management platform** built with **Node.js, Express, SQLite, and EJS**, designed to digitize the creation, management, and distribution of course plans in higher education institutions.
 
-The system provides structured management of:
-
-* course plans (RPS)
-* curriculum learning outcomes (CPL)
-* course learning outcomes (CPMK)
-* lecturer assignments
-* academic assessments
-* student course access
-
-This project demonstrates **backend system architecture, relational data modeling, authentication systems, and role-based application design**.
+This project has evolved from a traditional MVC system into a **layered, deterministic backend architecture**, emphasizing clarity, stability, and maintainability.
 
 ---
 
 # System Overview
 
-Universities often manage RPS documents manually using spreadsheets or PDFs.
+Universities often manage RPS documents manually using spreadsheets or PDFs.  
 This system transforms the workflow into a **centralized web platform** that enables structured academic management.
 
 Key capabilities:
@@ -39,7 +30,7 @@ Backend
 
 * Node.js
 * Express.js
-* MySQL
+* SQLite (via Sequelize ORM)
 * JWT Authentication
 
 Frontend
@@ -51,60 +42,100 @@ Frontend
 
 Infrastructure Concepts
 
-* MVC architecture
+* Clean Layered Architecture (Phase 4)
 * REST API
 * middleware-based security
 * relational database modeling
+* deterministic system design
 
 ---
 
-# High Level Architecture
+# Architecture Evolution
+
+## Phase ≤3 (Legacy)
 
 ```
-Browser / Client
-        │
-        ▼
-   Express Router Layer
-        │
-        ▼
-    Controller Layer
-        │
-        ▼
-      Model Layer
-        │
-        ▼
-   MySQL Relational Database
+
+Routes → Controllers → Models → Database
+
 ```
 
-### Architectural Principles
+Characteristics:
 
-The system follows several core backend principles:
+* mixed architectural styles
+* controller-heavy logic
+* direct model access
+* debugging complexity
 
-1. **Separation of Concerns**
+---
 
-Routes, controllers, models, and views are isolated into independent layers.
+## Phase 4 (Current)
 
-2. **Controller-driven logic**
+```
 
-Business logic is centralized in controllers rather than routes.
+Routes
+↓
+Controllers
+↓
+Services
+↓
+Repositories (ongoing)
+↓
+Models
+↓
+Database
 
-3. **Relational data modeling**
+```
 
-Course plans and learning outcomes are stored using normalized database structures.
+Characteristics:
 
-4. **Middleware security**
+* deterministic execution flow
+* strict separation of concerns
+* service orchestration layer
+* repository-based data access (Step 4.2.3 ongoing)
+* reduced debugging complexity
 
-Authentication and authorization are enforced before protected endpoints are accessed.
+---
+
+# Architectural Principles (Updated)
+
+1. **Deterministic Flow**
+
+Every request follows a predictable path:
+
+```
+
+Route → Controller → Service → Repository → Model
+
+```
+
+2. **Single Responsibility**
+
+Each layer has one clear responsibility:
+
+| Layer        | Responsibility            |
+|-------------|--------------------------|
+| Route       | HTTP mapping             |
+| Controller  | request/response         |
+| Service     | business logic           |
+| Repository  | database access          |
+| Model       | ORM schema               |
+
+3. **No Layer Leakage**
+
+* Controller ❌ DB access
+* Service ❌ direct Sequelize usage (in progress)
+* Repository ✔ single DB gateway
+
+4. **Debugging Clarity**
+
+All logs and failures are traceable by layer.
 
 ---
 
 # Role-Based Access Model
 
-The application defines three primary actors.
-
 ## Admin
-
-Responsibilities:
 
 * manage courses
 * manage lecturers
@@ -114,267 +145,164 @@ Responsibilities:
 
 ## Lecturer (Dosen)
 
-Responsibilities:
-
 * create and edit RPS
 * define CPMK
-* design assessment structures
+* design assessments
 * manage references
-* update course learning plans
 
 ## Student (Mahasiswa)
 
-Capabilities:
-
-* view available courses
-* search RPS documents
-* download printable RPS
+* view courses
+* search RPS
+* print documents
 
 ---
 
 # Data Model
 
-Core domain entities:
+Core entities:
 
 | Entity              | Description            |
-| ------------------- | ---------------------- |
-| Users               | system accounts        |
-| Lecturers           | academic staff         |
-| Courses             | academic subjects      |
-| Course Plans        | RPS documents          |
-| Course Plan Details | meeting-level planning |
-| Assessments         | grading components     |
-| Curriculum Outcomes | CPL mapping            |
-| Course Outcomes     | CPMK definitions       |
+|-------------------|------------------------|
+| Users             | system accounts        |
+| Lecturers         | academic staff         |
+| Courses           | subjects               |
+| Course Plans      | RPS documents          |
+| Plan Details      | weekly meetings        |
+| Assessments       | grading components     |
+| CPL               | curriculum outcomes    |
+| CPMK              | course outcomes        |
 
-Relationship example:
+---
+
+# Project Structure (Phase 4)
 
 ```
-Curriculum
-   │
-   ▼
-CPL (Learning Outcomes)
-   │
-   ▼
-CPMK
-   │
-   ▼
-Course Plan
-   │
-   ▼
-Course Plan Details
+
+config/
+controllers/
+middleware/
+models/
+repositories/        ← NEW (in progress)
+services/
+routes/
+modules/             ← auth module
+scripts/
+utils/
+views/
+public/
+docs/
+legacy/              ← isolated old system
+
 ```
 
 ---
 
-# Project Structure
+# Authentication System
+
+Authentication is implemented using **JWT + Cookie-based session**.
+
+Flow:
 
 ```
-.
-├── config/
-│   ├── config.json
-│   └── conn.js
-│
-├── controller/
-│   ├── courses.js
-│   ├── users.js
-│   ├── course_plan.js
-│   ├── course_plan_details.js
-│   ├── course_plan_assessments.js
-│   ├── course_plan_references.js
-│   └── course_los.js
-│
-├── models/
-│   ├── users.js
-│   ├── courses.js
-│   ├── course_plans.js
-│   ├── course_plan_details.js
-│   ├── course_plan_assessments.js
-│   ├── curriculum_los.js
-│   └── dbconfig.js
-│
-├── routes/
-│   ├── auth.js
-│   ├── admin.js
-│   ├── dosen.js
-│   └── mahasiswa.js
-│
-├── middleware/
-│   └── verifyToken.js
-│
-├── views/
-│   ├── admin/
-│   ├── dosen/
-│   ├── mahasiswa/
-│   └── partials/
-│
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── server.js
-├── index.js
-└── loki.sql
+
+Login → JWT generated → cookie stored → middleware validates → access granted
+
 ```
+
+Location:
+
+```
+
+modules/auth/
+
+````
 
 ---
 
-# Authentication Model
+# Database Lifecycle (Deterministic)
 
-Authentication is implemented using **JWT tokens**.
+Standard flow:
 
-Authentication flow:
+```bash
+npm run db:reset
+npm run db:init
+npm run db:seed
+````
 
-```
-User Login
-    │
-    ▼
-JWT Token Generated
-    │
-    ▼
-Client stores token
-    │
-    ▼
-Protected API Request
-    │
-    ▼
-verifyToken Middleware
-    │
-    ▼
-Authorized Controller Access
-```
+Current behavior:
 
-Middleware responsible:
-
-```
-middleware/verifyToken.js
-```
-
-Security responsibilities:
-
-* token validation
-* unauthorized request blocking
-* session protection
+* schema auto-sync via Sequelize
+* seed includes admin user
+* fully reproducible environment
 
 ---
 
-# API Layer
+# CLI Tooling
 
-Example endpoint groups.
+System diagnostics:
 
-Authentication
-
-```
-POST /auth/login
-POST /auth/register
-```
-
-Admin
-
-```
-GET /admin/courses
-GET /admin/coursePlan
-GET /admin/reports
+```bash
+node scripts/doctor.js
+node scripts/route-audit.js
+node scripts/dependency-check.js
+node scripts/sequelize-health.js
+npm run smoke:test
 ```
 
-Lecturer
+Purpose:
 
-```
-GET /dosen/courses
-POST /dosen/add_rps
-PUT /dosen/edit_rps
-```
-
-Student
-
-```
-GET /mahasiswa/courses
-GET /mahasiswa/search
-```
+* detect architecture issues
+* validate routes
+* ensure system stability
 
 ---
 
-# Installation
+# Phase 4 Refactor Status
 
-Clone repository
+## Completed
+
+* Controller unification
+* Legacy controller removal
+* Service layer enforcement
+* Authentication stabilization
+* Database lifecycle stabilization
+
+## In Progress
 
 ```
-git clone https://github.com/yourusername/loki_a2.git
+Step 4.2.3 — Repository Enforcement
+```
+
+Goal:
+
+* move all DB queries to repository layer
+* eliminate Sequelize usage from services
+
+---
+
+# Installation (Updated)
+
+```bash
+git clone https://github.com/Reltroner/loki.git
 cd loki_a2
-```
 
-Install dependencies
-
-```
 npm install
-```
 
-Configure environment
-
-Create `.env`
-
-```
-PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=loki
-JWT_SECRET=secret_key
-```
-
-Import database
-
-```
-loki.sql
-```
-
-Run server
-
-```
-npm start
-```
-
-Application runs at
-
-```
-http://localhost:3000
+npm run db:bootstrap   # (coming soon)
+npm run dev
 ```
 
 ---
 
-# Engineering Decisions
+# Engineering Direction
 
-### Why Express.js
+The project is transitioning toward:
 
-Express provides a minimal backend framework suitable for structured MVC implementations.
-
-### Why MySQL
-
-The system requires structured relational modeling for academic relationships such as:
-
-* courses
-* learning outcomes
-* course plans
-* lecturer assignments
-
-### Why EJS
-
-EJS allows server-side rendering with dynamic templates while keeping frontend lightweight.
-
----
-
-# Scalability Considerations
-
-Future architectural improvements could include:
-
-* service layer abstraction
-* API versioning
-* database migrations
-* RBAC policy engine
-* REST API documentation (OpenAPI)
-* frontend SPA architecture (React / Vue)
-* containerization with Docker
+* Clean Architecture
+* deterministic backend systems
+* low debugging cost systems
+* modular scalable backend
 
 ---
 
@@ -393,17 +321,12 @@ Future architectural improvements could include:
 
 # Academic Context
 
-This project was developed as part of a university coursework assignment focused on building a **web-based academic management system**.
-
-The implementation demonstrates concepts in:
-
-* full-stack web development
-* backend system design
-* relational database modeling
-* authentication systems
+Originally developed as a university project, now evolving into a **production-grade backend architecture exercise**.
 
 ---
 
 # License
 
 Open source for academic and educational purposes.
+
+---

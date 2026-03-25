@@ -27,7 +27,7 @@ const loadModules = require("./scripts/module-loader");
 |--------------------------------------------------------------------------
 */
 
-const { authenticateToken } = require("./middleware/verifyToken");
+const { authenticate } = require("./modules/auth/middleware/authenticate");
 const userContext = require("./middleware/userContext");
 
 const PORT = process.env.PORT || 8000;
@@ -78,6 +78,7 @@ function createApp() {
   | Module Loader (auth module dll)
   |----------------------------------------------------------------------
   */
+  app.use(cookieParser());
 
   loadModules(app);
 
@@ -97,7 +98,7 @@ function createApp() {
   |----------------------------------------------------------------------
   */
 
-  app.get("/", authenticateToken, (req, res) => {
+  app.get("/", authenticate, (req, res) => {
     res.render("home");
   });
 
@@ -136,11 +137,22 @@ function createApp() {
   */
 
   app.use((err, req, res, next) => {
-    console.error(err);
 
-    res.status(500).render("err500", {
-      error: err.message
+    console.error("GLOBAL ERROR:", err);
+
+    const status = err.status || 500;
+    const message = err.message || "Internal Server Error";
+
+    // API response
+    if (req.headers["content-type"] === "application/json") {
+      return res.status(status).json({ error: message });
+    }
+
+    // View response
+    return res.status(status).render("err500", {
+      error: message
     });
+
   });
 
   return app;

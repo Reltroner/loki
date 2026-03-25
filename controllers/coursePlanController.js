@@ -1,6 +1,18 @@
 // controllers/coursePlanController.js
 
 const service = require("../services/coursePlanService");
+const asyncHandler = require("../utils/asyncHandler");
+
+/*
+|--------------------------------------------------------------------------
+| HELPER (deterministic param extraction)
+|--------------------------------------------------------------------------
+*/
+
+const getParams = (req) => ({
+  id: req.params.id || req.params.coursePlanId,
+  rev: req.params.rev
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -8,31 +20,21 @@ const service = require("../services/coursePlanService");
 |--------------------------------------------------------------------------
 */
 
-const getCourses = async (req, res) => {
-  try {
+const getCourses = asyncHandler(async (req, res) => {
 
-    const result = await service.getCoursePlan(
-      req.params.id,
-      req.params.rev
-    );
+  const { id, rev } = getParams(req);
 
-    if (!result) {
-      return res.status(404).json({
-        message: "data tidak ada"
-      });
-    }
+  const result = await service.getCoursePlan(id, rev);
 
-    res.render("dosen/course_plan", { items: result });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
+  if (!result) {
+    return res.status(404).render("err404", {
+      error: "data tidak ada"
     });
-
   }
-};
 
+  return res.render("dosen/course_plan", { items: result });
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -40,63 +42,31 @@ const getCourses = async (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-const coursesAdmin = async (req, res) => {
-  try {
+const coursesAdmin = asyncHandler(async (req, res) => {
 
-    const result = await service.getCoursesAdmin();
+  const result = await service.getCoursesAdmin();
 
-    res.render("admin/coursesPlan", {
-      items: result
-    });
+  return res.render("admin/coursesPlan", { items: result });
 
-  } catch (error) {
+});
 
-    res.status(500).json({
-      message: error.message
-    });
+const getCourseAdmin = asyncHandler(async (req, res) => {
 
-  }
-};
+  const { id, rev } = getParams(req);
 
-const getCourseAdmin = async (req, res) => {
-  try {
+  const result = await service.getCoursePlan(id, rev);
 
-    const result = await service.getCoursePlan(
-      req.params.id,
-      req.params.rev
-    );
+  return res.render("admin/lihatRps", { items: result });
 
-    res.render("admin/lihatRps", {
-      items: result
-    });
+});
 
-  } catch (error) {
+const cetakListRps = asyncHandler(async (req, res) => {
 
-    res.status(500).json({
-      message: error.message
-    });
+  const result = await service.getCoursesAdmin();
 
-  }
-};
+  return res.render("admin/cetakListRps", { items: result });
 
-const cetakListRps = async (req, res) => {
-  try {
-
-    const result = await service.getCoursesAdmin();
-
-    res.render("admin/cetakListRps", {
-      items: result
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-};
-
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -104,86 +74,43 @@ const cetakListRps = async (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-const getCourseMahasiswa = async (req, res) => {
-  try {
+const getCourseMahasiswa = asyncHandler(async (req, res) => {
 
-    const result = await service.getCoursePlan(
-      req.params.id,
-      req.params.rev
-    );
+  const { id, rev } = getParams(req);
 
-    res.render("mahasiswa/course_plan", {
-      item: result
-    });
+  const result = await service.getCoursePlan(id, rev);
 
-  } catch (error) {
+  return res.render("mahasiswa/course_plan", { item: result });
 
-    res.status(500).json({
-      message: error.message
-    });
+});
 
-  }
-};
+const getAllCoursePlan = asyncHandler(async (req, res) => {
 
-const getAllCoursePlan = async (req, res) => {
-  try {
+  const result = await service.getCoursesAdmin();
 
-    const result = await service.getCoursesAdmin();
+  return res.render("mahasiswa/courses", { items: result });
 
-    res.render("mahasiswa/courses", {
-      items: result
-    });
+});
 
-  } catch (error) {
+const cetakRpsMahasiswa = asyncHandler(async (req, res) => {
 
-    res.status(500).json({
-      message: error.message
-    });
+  const { id, rev } = getParams(req);
 
-  }
-};
+  const result = await service.getCoursePlan(id, rev);
 
-const cetakRpsMahasiswa = async (req, res) => {
-  try {
+  return res.render("mahasiswa/cetakRps", { items: result });
 
-    const result = await service.getCoursePlan(
-      req.params.id,
-      req.params.rev
-    );
+});
 
-    res.render("mahasiswa/cetakRps", {
-      items: result
-    });
+const cetakRps = asyncHandler(async (req, res) => {
 
-  } catch (error) {
+  const { id, rev } = getParams(req);
 
-    res.status(500).json({
-      message: error.message
-    });
+  const result = await service.getCoursePlan(id, rev);
 
-  }
-};
+  return res.render("dosen/cetakRps", { items: result });
 
-const cetakRps = async (req, res) => {
-  try {
-
-    const result = await service.getCoursePlan(
-      req.params.id,
-      req.params.rev
-    );
-
-    res.render("dosen/cetakRps", {
-      items: result
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-};
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -191,28 +118,15 @@ const cetakRps = async (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-const search = async (req, res) => {
+const search = asyncHandler(async (req, res) => {
 
-  try {
+  const { term } = req.query;
 
-    const term = req.query.term;
+  const result = await service.searchCoursePlan(term);
 
-    const result = await service.searchCoursePlan(term);
+  return res.render("mahasiswa/search", { items: result });
 
-    res.render("mahasiswa/search", {
-      items: result
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-
-};
-
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -220,49 +134,43 @@ const search = async (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-const updateCoursePlan = async (req, res) => {
+const updateCoursePlan = asyncHandler(async (req, res) => {
 
-  try {
+  const { id, rev } = getParams(req);
 
-    const payload = {
-      code: req.body.code,
-      name: req.body.name,
-      course_id: req.body.course_id,
-      alias_name: req.body.alias_name,
-      credit: req.body.credit,
-      semester: req.body.semester,
-      description: req.body.description
-    };
+  const payload = {
+    code: req.body.code,
+    name: req.body.name,
+    course_id: req.body.course_id,
+    alias_name: req.body.alias_name,
+    credit: req.body.credit,
+    semester: req.body.semester,
+    description: req.body.description
+  };
 
-    await service.updateCoursePlan(
-      req.params.id,
-      req.params.rev,
-      payload
-    );
+  await service.updateCoursePlan(id, rev, payload);
 
-    res.redirect("back");
+  return res.redirect("back");
 
-  } catch (error) {
+});
 
-    res.status(500).json({
-      message: error.message
-    });
+/*
+|--------------------------------------------------------------------------
+| STUB (safe placeholder)
+|--------------------------------------------------------------------------
+*/
 
-  }
+const editCoursePlan = asyncHandler(async (req, res) => {
+  return res.send("editCoursePlan stub");
+});
 
-};
+const revisi = asyncHandler(async (req, res) => {
+  return res.send("revisi stub");
+});
 
-const editCoursePlan = async (req, res) => {
-  res.send("editCoursePlan stub");
-};
-
-const revisi = async (req, res) => {
-  res.send("revisi stub");
-};
-
-const revisiRps = async (req, res) => {
-  res.send("revisiRps stub");
-};
+const revisiRps = asyncHandler(async (req, res) => {
+  return res.send("revisiRps stub");
+});
 
 /*
 |--------------------------------------------------------------------------
