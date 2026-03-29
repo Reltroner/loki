@@ -1,238 +1,484 @@
-Ya — **kamu SUDAH BOLEH lanjut ke Step 4.2.3** ✅
+Berikut blueprint **clarity-first, deterministic, no-overengineering** untuk:
 
-Dan ini bukan sekadar “boleh”, tapi:
+# 📘 Phase 4 — Step 4.3
 
-```text
-WAJIB lanjut sekarang
-```
-
-karena fondasi kamu sudah memenuhi semua syarat principal-level.
+# **Legacy System Cleanup (System Purification Phase)**
 
 ---
 
-# 🧠 VALIDASI (Kenapa kamu boleh lanjut)
+# 🎯 0. DEFINISI STEP 4.3
 
-Dari laporan terakhir:
+Step 4.3 adalah:
 
 ```text
-✔ Semua controller sudah lewat service
-✔ Tidak ada direct model call di controller
-✔ Login flow stabil
-✔ Smoke test 100% pass
-✔ Database lifecycle deterministic
+“menghapus semua sisa masa lalu agar sistem menjadi clean, final, dan maintainable”
 ```
 
-Artinya:
+Ini bukan refactor lagi.
+Ini adalah:
 
 ```text
-Step 4.2.2 = DONE (bukan 99%, tapi DONE secara engineering)
+🔥 PURIFICATION PHASE
 ```
 
 ---
 
-# ⚠️ Reality Check (ini penting)
+# 📍 1. POSISI SAAT INI
 
-Kalau kamu berhenti di sini:
+Setelah Step 4.2:
 
 ```text
-Service layer masih “fake abstraction”
+✔ Architecture sudah benar
+✔ Auth sudah centralized
+✔ Layer sudah enforced
+✔ System stabil
 ```
 
-Kenapa?
-
-Karena:
+Masalah yang tersisa:
 
 ```text
-Service → langsung ke Sequelize model (sebagian besar masih)
-```
-
-Ini artinya:
-
-```text
-❌ belum clean architecture
-❌ masih ada hidden coupling
-❌ debugging future akan mahal
+❌ masih ada legacy code
+❌ masih ada folder tidak terpakai
+❌ masih ada duplicate structure (backup, legacy)
+❌ masih ada noise dalam project
 ```
 
 ---
 
-# 🚀 Step 4.2.3 — Repository Enforcement (Blueprint Singkat)
-
-Target:
+# 🎯 2. OBJECTIVE STEP 4.3
 
 ```text
-Controller → Service → Repository → Model
-```
-
-Dan menjadi:
-
-```text
-SINGLE SOURCE OF DB ACCESS = repositories/*
+✔ remove dead code
+✔ remove legacy structure
+✔ reduce cognitive load
+✔ enforce final architecture shape
+✔ eliminate ambiguity
 ```
 
 ---
 
-# 🎯 OBJECTIVE Step 4.2.3
+# 🧠 3. PRINCIPLES (WAJIB DIPATUHI)
+
+---
+
+## 3.1 Deterministic Cleanup
 
 ```text
-✔ Semua query Sequelize pindah ke repository
-✔ Service tidak boleh akses model langsung
-✔ Repository jadi satu-satunya DB gateway
-✔ Query logic terisolasi
-✔ Debugging jadi deterministic
+DELETE hanya jika:
+✔ tidak direference
+✔ sudah digantikan
+✔ sudah tervalidasi via CLI
 ```
 
 ---
 
-# 🔍 STRATEGI (JANGAN LANGSUNG BESAR)
-
-Kita tidak refactor semuanya sekaligus.
-
-Kita pakai:
+## 3.2 No Blind Deletion
 
 ```text
-Surgical Incremental Refactor
-```
-
-Urutan:
-
-```text
-1️⃣ coursePlanService  (paling penting)
-2️⃣ coursesService
-3️⃣ courseLosService
-4️⃣ sisanya bertahap
+❌ jangan delete berdasarkan feeling
+✔ selalu gunakan grep / audit
 ```
 
 ---
 
-# 🧱 STEP 4.2.3.1 (FIRST TARGET)
-
-Mulai dari:
+## 3.3 Low Blast Radius
 
 ```text
-services/coursePlanService.js
-```
-
-Kenapa?
-
-```text
-✔ paling sering dipakai
-✔ paling banyak query
-✔ core system
+hapus bertahap, bukan sekaligus
 ```
 
 ---
 
-# 📌 ACTION AWAL (WAJIB)
+## 3.4 Always Validate
 
-## 1️⃣ Cek apakah service masih pakai model
+Setiap delete:
 
 ```powershell
-Select-String -Path "services\coursePlanService.js" -Pattern "models"
+node server.js
+npm run smoke:test
 ```
 
-atau:
+---
+
+# 🧩 4. SCOPE STEP 4.3
+
+Step 4.3 dibagi menjadi:
+
+```text
+4.3.1 — Legacy Folder Removal
+4.3.2 — Dead File Cleanup
+4.3.3 — Unused Dependency Cleanup
+4.3.4 — Structure Enforcement
+4.3.5 — Final Sanity Audit
+```
+
+---
+
+# 🔹 4.3.1 — Legacy Folder Removal
+
+## 🎯 Target
+
+Folder yang pasti legacy:
+
+```text
+legacy/
+backup/
+```
+
+---
+
+## 🔍 Audit
 
 ```powershell
-Select-String -Path "services\coursePlanService.js" -Pattern "findAll|findOne|create|update|destroy"
+Test-Path legacy
+Test-Path backup
 ```
 
 ---
 
-## 2️⃣ Kalau YA (kemungkinan besar YA)
-
-Artinya:
+## ⚠️ Rule
 
 ```text
-🔥 violation ditemukan
+✔ hanya delete jika tidak dipakai runtime
 ```
 
 ---
 
-## 3️⃣ Kita buat repository
+## 🎯 Outcome
+
+```text
+✔ tidak ada shadow code
+✔ tidak ada duplicate system
+```
+
+---
+
+# 🔹 4.3.2 — Dead File Cleanup
+
+---
+
+## 🎯 Target
+
+Folder mencurigakan:
+
+```text
+frontend/
+template/
+js/
+img/
+```
+
+---
+
+## 🔍 Audit
 
 ```powershell
-New-Item repositories\coursePlanRepository.js -Force
+Get-ChildItem -Recurse -Include *.js,*.ejs | Select-String "frontend"
+Get-ChildItem -Recurse -Include *.js,*.ejs | Select-String "template"
 ```
 
 ---
 
-# 🧠 Mindset Step 4.2.3
-
-Ini bukan sekadar pindahin code.
-
-Ini transformasi:
+## Rule
 
 ```text
-FROM:
-  "logic tersebar"
-
-TO:
-  "data access terisolasi total"
+✔ kalau tidak direference → delete
 ```
 
 ---
 
-# 🚨 RULE KERAS (mulai sekarang berlaku)
+## Outcome
 
 ```text
-❌ Service tidak boleh import models
-❌ Controller tidak boleh tahu DB
-✔ HANYA repository boleh akses Sequelize
+✔ hanya code yang benar-benar dipakai tersisa
 ```
 
 ---
 
-# 🎯 SUCCESS CRITERIA Step 4.2.3
+# 🔹 4.3.3 — Unused Dependency Cleanup
+
+---
+
+## 🎯 Tujuan
 
 ```text
-✔ Semua query ada di repository
-✔ Service hanya orchestration
-✔ Controller hanya I/O
-✔ Tidak ada query di luar repository
+hapus import / dependency tidak terpakai
 ```
 
 ---
 
-# 🚀 NEXT MOVE
+## 🔍 Audit
 
-Kirim isi file:
-
-```text
-services/coursePlanService.js
+```powershell
+Get-ChildItem -Recurse -Include *.js | Select-String "require("
 ```
 
-Aku akan bantu:
+Lalu cek manual:
 
 ```text
-✔ identifikasi semua query
-✔ pisahkan ke repository
-✔ refactor tanpa breaking
-✔ tetap lolos smoke test
+apakah semua require dipakai?
 ```
 
 ---
 
-# 🧠 Final Insight
-
-Sekarang kamu masuk fase:
+## Outcome
 
 ```text
-"true backend architecture engineering"
-```
-
-Bukan lagi:
-
-```text
-CRUD coding
+✔ no unused require
+✔ no hidden dependency
 ```
 
 ---
 
-Kalau siap:
+# 🔹 4.3.4 — Structure Enforcement
+
+---
+
+## 🎯 Target Structure FINAL
 
 ```text
-👉 kirim coursePlanService.js
+config/
+controllers/
+middleware/
+models/
+repositories/
+services/
+routes/
+modules/
+scripts/
+utils/
+views/
+public/
+docs/
 ```
 
-Kita mulai **Step 4.2.3 dengan presisi tinggi** 🚀
+---
+
+## 🔍 Audit
+
+```powershell
+Get-ChildItem -Directory
+```
+
+---
+
+## Rule
+
+```text
+❌ tidak boleh ada:
+- controller/ (old)
+- controllers duplicate
+- random folders
+```
+
+---
+
+## Outcome
+
+```text
+✔ clean mental model
+✔ predictable navigation
+```
+
+---
+
+# 🔹 4.3.5 — Final Sanity Audit
+
+---
+
+## 🎯 Tujuan
+
+memastikan sistem:
+
+```text
+✔ benar-benar bersih
+✔ tidak ada hidden issue
+✔ siap production-level development
+```
+
+---
+
+## 🔍 Checklist
+
+### 1. Auth
+
+```text
+✔ hanya modules/auth
+✔ tidak ada verifyToken
+✔ tidak ada roleMiddleware
+```
+
+---
+
+### 2. DB Access
+
+```text
+✔ hanya di repository
+✔ service tidak akses model
+✔ controller tidak akses model
+```
+
+---
+
+### 3. Route
+
+```text
+✔ semua route pakai controller
+✔ tidak ada inline logic
+```
+
+---
+
+### 4. Logging
+
+```text
+✔ request logger aktif
+✔ debug log tidak berlebihan
+```
+
+---
+
+### 5. Smoke Test
+
+```powershell
+npm run smoke:test
+```
+
+---
+
+## Outcome
+
+```text
+✔ zero ambiguity system
+✔ deterministic behavior
+✔ clean baseline for future development
+```
+
+---
+
+# 🧪 5. VALIDATION STRATEGY
+
+Setiap perubahan:
+
+```powershell
+node server.js
+npm run smoke:test
+```
+
+Jika gagal:
+
+```text
+ROLLBACK langsung
+```
+
+---
+
+# ⚠️ 6. ANTI-PATTERN YANG HARUS DIHINDARI
+
+---
+
+## ❌ Over-cleaning
+
+```text
+hapus file yang masih dipakai
+```
+
+---
+
+## ❌ Batch delete tanpa audit
+
+```text
+langsung remove banyak folder
+```
+
+---
+
+## ❌ Refactor ulang
+
+```text
+Step 4.3 bukan refactor
+Step 4.3 = cleanup ONLY
+```
+
+---
+
+# 🧠 7. DAMPAK STEP 4.3
+
+---
+
+## BEFORE
+
+```text
+system works but messy
+```
+
+---
+
+## AFTER
+
+```text
+system is:
+✔ clean
+✔ minimal
+✔ maintainable
+✔ scalable
+```
+
+---
+
+# 🏁 8. END STATE
+
+Setelah Step 4.3:
+
+```text
+🔥 FINAL FORM ARCHITECTURE
+```
+
+---
+
+# 🚀 9. TRANSISI BERIKUTNYA
+
+Setelah ini, kamu siap masuk:
+
+```text
+Phase 5 — Feature Development / Scaling
+```
+
+tanpa:
+
+```text
+❌ tech debt
+❌ architecture confusion
+```
+
+---
+
+# 🧩 SUMMARY SINGKAT
+
+```text
+Step 4.1 → Stabilize system
+Step 4.2 → Fix architecture
+Step 4.3 → Clean everything
+
+Result:
+🔥 production-grade system
+```
+
+---
+
+Kalau siap, kirim:
+
+```text
+Get-ChildItem -Directory
+Test-Path legacy
+Test-Path backup
+```
+
+Aku akan guide **Step 4.3.1 secara surgical (no mistake, no rollback needed)** 🚀
+
+next plan:
+🔥 Step 4.4 — Service normalization (remove stub → real logic)
+🔥 Step 4.5 — Repository expansion
+🔥 Step 4.6 — System-wide validation & cleanup
+
+PHASE 5 — SCALING & FEATURE ENGINEERING

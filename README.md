@@ -1,139 +1,189 @@
-# RPS Management System
+# 📘 RPS Management System
 
 ### Academic Course Plan (RPS) Platform
 
 A role-based **RPS (Rencana Pembelajaran Semester) management platform** built with **Node.js, Express, SQLite, and EJS**, designed to digitize the creation, management, and distribution of course plans in higher education institutions.
 
-This project has evolved from a traditional MVC system into a **layered, deterministic backend architecture**, emphasizing clarity, stability, and maintainability.
+This project has evolved from a traditional MVC system into a **layered, deterministic backend architecture**, emphasizing:
+
+```text
+clarity
+stability
+predictability
+maintainability
+```
 
 ---
 
-# System Overview
+# 🧭 System Overview
 
-Universities often manage RPS documents manually using spreadsheets or PDFs.  
+Universities often manage RPS documents manually using spreadsheets or PDFs.
 This system transforms the workflow into a **centralized web platform** that enables structured academic management.
 
-Key capabilities:
+### Core Capabilities
 
 * centralized course plan management
 * learning outcome mapping (CPL → CPMK)
 * lecturer RPS authoring tools
-* academic reporting
+* academic reporting & analytics
 * student RPS discovery
 * printable academic documents
 
 ---
 
-# Tech Stack
+# ⚙️ Tech Stack
 
-Backend
+## Backend
 
 * Node.js
 * Express.js
-* SQLite (via Sequelize ORM)
-* JWT Authentication
+* SQLite (Sequelize ORM)
+* JWT Authentication (cookie-based)
 
-Frontend
+## Frontend
 
 * HTML
 * CSS
 * JavaScript
 * EJS Template Engine
 
-Infrastructure Concepts
+## Engineering Concepts
 
-* Clean Layered Architecture (Phase 4)
-* REST API
-* middleware-based security
-* relational database modeling
-* deterministic system design
+* Clean Layered Architecture
+* RESTful Design
+* Middleware-based Security
+* Relational Data Modeling
+* Deterministic System Design
 
 ---
 
-# Architecture Evolution
+# 🏗️ Architecture Evolution
 
 ## Phase ≤3 (Legacy)
 
-```
-
+```text
 Routes → Controllers → Models → Database
-
 ```
 
-Characteristics:
+### Issues
 
 * mixed architectural styles
 * controller-heavy logic
 * direct model access
-* debugging complexity
+* high debugging cost
 
 ---
 
-## Phase 4 (Current)
+## Phase 4 (Current — Deterministic Architecture)
 
-```
-
+```text
 Routes
 ↓
 Controllers
 ↓
 Services
 ↓
-Repositories (ongoing)
+Repositories
 ↓
 Models
 ↓
 Database
-
 ```
 
-Characteristics:
+### Characteristics
 
 * deterministic execution flow
 * strict separation of concerns
 * service orchestration layer
-* repository-based data access (Step 4.2.3 ongoing)
-* reduced debugging complexity
+* repository-based data access
+* low debugging complexity
+* traceable system behavior
 
 ---
 
-# Architectural Principles (Updated)
+# 🧠 Architectural Principles
 
-1. **Deterministic Flow**
+## 1. Deterministic Flow
 
 Every request follows a predictable path:
 
-```
-
+```text
 Route → Controller → Service → Repository → Model
-
 ```
-
-2. **Single Responsibility**
-
-Each layer has one clear responsibility:
-
-| Layer        | Responsibility            |
-|-------------|--------------------------|
-| Route       | HTTP mapping             |
-| Controller  | request/response         |
-| Service     | business logic           |
-| Repository  | database access          |
-| Model       | ORM schema               |
-
-3. **No Layer Leakage**
-
-* Controller ❌ DB access
-* Service ❌ direct Sequelize usage (in progress)
-* Repository ✔ single DB gateway
-
-4. **Debugging Clarity**
-
-All logs and failures are traceable by layer.
 
 ---
 
-# Role-Based Access Model
+## 2. Single Responsibility
+
+| Layer      | Responsibility   |
+| ---------- | ---------------- |
+| Route      | HTTP mapping     |
+| Controller | request/response |
+| Service    | business logic   |
+| Repository | database access  |
+| Model      | ORM schema       |
+
+---
+
+## 3. No Layer Leakage
+
+Strict enforcement:
+
+```text
+Controller  ❌ no DB access
+Service     ❌ no Sequelize usage (enforced in Phase 4)
+Repository  ✔ single DB gateway
+```
+
+---
+
+## 4. Debugging Clarity
+
+System debugging follows **layer-by-layer tracing**:
+
+```text
+Route → Controller → Service → Repository → DB
+```
+
+No ambiguity. No guessing.
+
+---
+
+# 🔐 Authentication System
+
+Authentication is implemented using:
+
+```text
+JWT + Cookie-based session
+```
+
+### Flow
+
+```text
+Login
+→ JWT generated
+→ Cookie stored (httpOnly)
+→ Middleware validates
+→ Access granted
+```
+
+### Module Boundary
+
+```text
+modules/auth/
+├── authRoutes
+├── authController
+├── authService
+├── authRepository
+├── middleware/
+├── utils/
+```
+
+Auth is now **fully isolated and modular**.
+
+---
+
+# 🧱 Role-Based Access Model
 
 ## Admin
 
@@ -158,89 +208,72 @@ All logs and failures are traceable by layer.
 
 ---
 
-# Data Model
+# 🗃️ Data Model
 
 Core entities:
 
-| Entity              | Description            |
-|-------------------|------------------------|
-| Users             | system accounts        |
-| Lecturers         | academic staff         |
-| Courses           | subjects               |
-| Course Plans      | RPS documents          |
-| Plan Details      | weekly meetings        |
-| Assessments       | grading components     |
-| CPL               | curriculum outcomes    |
-| CPMK              | course outcomes        |
+| Entity       | Description         |
+| ------------ | ------------------- |
+| Users        | system accounts     |
+| Lecturers    | academic staff      |
+| Courses      | subjects            |
+| Course Plans | RPS documents       |
+| Plan Details | weekly meetings     |
+| Assessments  | grading components  |
+| CPL          | curriculum outcomes |
+| CPMK         | course outcomes     |
 
 ---
 
-# Project Structure (Phase 4)
+# 📁 Project Structure (Phase 4)
 
-```
-
+```text
 config/
 controllers/
-middleware/
+middleware/            (legacy → being removed)
 models/
-repositories/        ← NEW (in progress)
+repositories/
+  └── queryBuilders/
 services/
 routes/
-modules/             ← auth module
+modules/
+  └── auth/
 scripts/
 utils/
 views/
 public/
 docs/
-legacy/              ← isolated old system
-
+legacy/                (isolated old system)
 ```
 
 ---
 
-# Authentication System
+# 🧬 Database Lifecycle (Deterministic)
 
-Authentication is implemented using **JWT + Cookie-based session**.
-
-Flow:
-
-```
-
-Login → JWT generated → cookie stored → middleware validates → access granted
-
-```
-
-Location:
-
-```
-
-modules/auth/
-
-````
-
----
-
-# Database Lifecycle (Deterministic)
-
-Standard flow:
+### Standard Flow
 
 ```bash
 npm run db:reset
 npm run db:init
 npm run db:seed
-````
+```
 
-Current behavior:
+### Target (Phase 4)
 
-* schema auto-sync via Sequelize
-* seed includes admin user
+```bash
+npm run db:bootstrap
+```
+
+### Characteristics
+
+* auto schema sync via Sequelize
+* seeded admin user
 * fully reproducible environment
+* zero ambiguity for new developers
 
 ---
 
-# CLI Tooling
-
-System diagnostics:
+# 🧪 CLI Tooling (Engineering Observability)
 
 ```bash
 node scripts/doctor.js
@@ -250,38 +283,44 @@ node scripts/sequelize-health.js
 npm run smoke:test
 ```
 
-Purpose:
+### Purpose
 
-* detect architecture issues
-* validate routes
+* detect architectural issues
+* validate routing layer
 * ensure system stability
+* prevent regression
 
 ---
 
-# Phase 4 Refactor Status
+# 🔄 Phase 4 Refactor Status
 
-## Completed
+## ✅ Completed
 
 * Controller unification
-* Legacy controller removal
+* Legacy controller isolation
 * Service layer enforcement
-* Authentication stabilization
+* Authentication modularization
 * Database lifecycle stabilization
-
-## In Progress
-
-```
-Step 4.2.3 — Repository Enforcement
-```
-
-Goal:
-
-* move all DB queries to repository layer
-* eliminate Sequelize usage from services
+* Middleware centralization (auth module)
 
 ---
 
-# Installation (Updated)
+## 🔄 In Progress
+
+```text
+Step 4.3 — Architecture Cleanup & Hardening
+```
+
+### Focus
+
+* remove legacy middleware
+* eliminate unused dependencies
+* enforce clean module boundaries
+* reduce system noise
+
+---
+
+# 🚀 Installation
 
 ```bash
 git clone https://github.com/Reltroner/loki.git
@@ -289,24 +328,26 @@ cd loki_a2
 
 npm install
 
-npm run db:bootstrap   # (coming soon)
+npm run db:bootstrap   # (soon)
 npm run dev
 ```
 
 ---
 
-# Engineering Direction
+# 🧠 Engineering Direction
 
-The project is transitioning toward:
+This project is evolving into:
 
-* Clean Architecture
-* deterministic backend systems
-* low debugging cost systems
-* modular scalable backend
+```text
+deterministic backend system
+clean architecture implementation
+low debugging cost system
+modular scalable backend
+```
 
 ---
 
-# Contributors
+# 👥 Contributors
 
 | Name                                | Role     |
 | ----------------------------------- | -------- |
@@ -319,14 +360,33 @@ The project is transitioning toward:
 
 ---
 
-# Academic Context
+# 🎓 Academic Context
 
-Originally developed as a university project, now evolving into a **production-grade backend architecture exercise**.
+Originally developed as a university project, now evolving into a:
+
+```text
+production-grade backend architecture exercise
+```
 
 ---
 
-# License
+# 📜 License
 
 Open source for academic and educational purposes.
 
 ---
+
+# 🔥 Signature Engineering Identity (Added)
+
+This project follows a strict engineering philosophy:
+
+```text
+Deterministic > Trial & Error
+Clarity > Cleverness
+Layer-by-layer Debugging > Guessing
+Small Safe Refactor > Big Rewrite
+```
+
+---
+
+
