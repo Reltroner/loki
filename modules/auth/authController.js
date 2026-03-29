@@ -11,6 +11,26 @@ exports.loginPage = (req, res) => {
 }
 
 exports.register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  // 🔥 validation minimal (deterministic)
+  if (!name || typeof name !== "string") {
+    return res.status(400).json({
+      error: "Invalid name"
+    });
+  }
+
+  if (!email || typeof email !== "string") {
+    return res.status(400).json({
+      error: "Invalid email"
+    });
+  }
+
+  if (!password || typeof password !== "string") {
+    return res.status(400).json({
+      error: "Invalid password"
+    });
+  }
   try {
 
     const user = await authService.registerUser(req.body)
@@ -22,9 +42,17 @@ exports.register = async (req, res) => {
 
   } catch (err) {
 
-    return res.status(500).json({
-      error: err.message
-    })
+    let status = 500;
+
+    if (err.code === "DATA_REQUIRED" || err.code === "INVALID_PARAMS") {
+      status = 400;
+    }
+
+    return res.status(status).json({
+      error: err.message,
+      code: err.code || "REGISTER_FAILED",
+      path: req.path
+    });
 
   }
 }
@@ -32,7 +60,20 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
 
   // DEBUG (deterministic placement)
-  console.log("LOGIN BODY:", req.body)
+  const { email, password } = req.body;
+
+// 🔥 validation minimal (deterministic)
+  if (!email || typeof email !== "string") {
+    return res.status(400).render("login", {
+      error: "Invalid email"
+    });
+  }
+
+  if (!password || typeof password !== "string") {
+    return res.status(400).render("login", {
+      error: "Invalid password"
+    });
+  }
 
   try {
 

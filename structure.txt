@@ -39,6 +39,7 @@ docs/notes/phase4step41plan.md
 docs/notes/phase4step42completed.md
 docs/notes/phase4step42plan.md
 docs/notes/phase4step43plan.md
+docs/notes/phase5finalenddocumentation.md
 docs/notes/phase5tophase8plan.md
 docs/notes/RELTRONER-ENGINEERING-FRAMEWORK.md
 docs/notes/rpspdfgenerator.md
@@ -132,6 +133,7 @@ public/images/sky.png
 public/js/datatables-simple-demo.js
 public/js/script.js
 README.md
+repositories/courseLosRepository.js
 repositories/coursePlanDetailRepository.js
 repositories/coursePlanRepository.js
 repositories/coursesRepository.js
