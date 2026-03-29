@@ -1,15 +1,27 @@
 // services/coursesService.js
 
+const repository = require("../repositories/coursesRepository");
+
 exports.getAllCourses = async () => {
-  // sementara stub
-  return []
-}
+
+  const data = await repository.findAllCourses();
+
+  if (!Array.isArray(data)) {
+    return [];
+  }
+
+  return data;
+};
 
 exports.createCourse = async (data) => {
-  // sementara stub
-  return { message: "Course created (stub)" }
-}
+
+  if (!data) {
+    throw new Error("DATA_REQUIRED");
+  }
+
+  return repository.createCourse(data);
+};
 
 exports.getMatkul = async () => {
-  return []
-}
+  return [];
+};
