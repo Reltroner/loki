@@ -222,3 +222,16 @@ Kita masuk ke:
 PHASE 7 — SECURITY HARDENING
 PHASE 8 — PRODUCTION DEPLOYMENT
 PHASE 9 — PERFORMANCE & SCALING
+
+Tambahkan:
+
+error code system
+logging
+request validation
+
+1. Trade-off thinking (WAJIB)
+
+Mulai mikir:
+
+clean vs cepat
+complexity vs maintainability

@@ -22,15 +22,19 @@ This system transforms the workflow into a **centralized web platform** that ena
 
 ## 📌 Project Evolution
 
-This system was originally built in 2022 as an academic project and has since evolved significantly.
+This project was originally developed in 2022 as a collaborative academic system by a team of students.
 
-In 2026, it was fully refactored into a deterministic, layered backend architecture with a focus on:
-- system clarity and maintainability  
-- predictable execution flow  
-- structured separation of concerns  
-- testability and observability  
+## 🔧 My Contribution (2026 Refactor & Evolution)
 
-This evolution reflects a transition from a traditional MVC approach into a production-oriented backend system design.
+In 2026, I independently led a full system refactor, transforming the project into a deterministic, production-oriented backend system with:
+
+- layered architecture (controller → service → repository)
+- structured error handling and observability
+- automated testing and system validation
+- modular authentication system
+- improved maintainability and scalability
+
+This phase represents a complete architectural evolution from the original implementation.
 
 ### Core Capabilities
 
