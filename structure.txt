@@ -41,6 +41,8 @@ docs/notes/phase4step42plan.md
 docs/notes/phase4step43plan.md
 docs/notes/phase5finalenddocumentation.md
 docs/notes/phase5tophase8plan.md
+docs/notes/phase6finalenddocumentation.md
+docs/notes/phase7plan.md
 docs/notes/RELTRONER-ENGINEERING-FRAMEWORK.md
 docs/notes/rpspdfgenerator.md
 docs/notes/scriptpowershell.md
@@ -80,6 +82,7 @@ index.js
 js/script.js
 loki.sql
 middleware/authMiddleware.js
+middleware/rateLimiter.js
 middleware/requestLogger.js
 middleware/userContext.js
 models/course_lo_details.js
@@ -105,6 +108,7 @@ modules/auth/authController.js
 modules/auth/authRepository.js
 modules/auth/authRoutes.js
 modules/auth/authService.js
+modules/auth/loginAttemptStore.js
 modules/auth/middleware/authenticate.js
 modules/auth/middleware/authorize.js
 modules/auth/utils/roleMapper.js

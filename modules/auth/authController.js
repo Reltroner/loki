@@ -1,6 +1,7 @@
 // modules/auth/authController.js
 
 const authService = require("./authService")
+const {recordFailure, resetAttempts, isLocked} = require("./loginAttemptStore");
 
 exports.registerPage = (req, res) => {
   return res.render("register")
@@ -62,6 +63,12 @@ exports.login = async (req, res) => {
   // DEBUG (deterministic placement)
   const { email, password } = req.body;
 
+  if (isLocked(email)) {
+    return res.status(429).render("login", {
+      error: "Too many failed attempts. Try again later."
+    });
+  }
+
 // 🔥 validation minimal (deterministic)
   if (!email || typeof email !== "string") {
     return res.status(400).render("login", {
@@ -77,7 +84,10 @@ exports.login = async (req, res) => {
 
   try {
 
-    const data = await authService.loginUser(req.body)
+    const data = await authService.loginUser(req.body);
+
+    // 🔥 record successful login
+    resetAttempts(email);
 
     // API request
     if (req.headers["content-type"] === "application/json") {
@@ -108,6 +118,9 @@ exports.login = async (req, res) => {
     return res.redirect("/")
 
   } catch (err) {
+
+    // 🔥 record failed login attempt
+    recordFailure(email);
 
     return res.status(401).render("login", {
       error: err.message

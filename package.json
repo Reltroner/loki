@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "node scripts/init-db.js",
     "start": "nodemon server.js",
-    "dev": "NODE_ENV=development nodemon server.js",
+    "dev": "node server.js",
     "sequelize:health": "node scripts/sequelize-health.js",
     "erd": "node scripts/erd-generator.js",
     "erd:graph": "node scripts/erd-graph.js",
@@ -23,7 +23,6 @@
     "arch:deps": "node scripts/module-deps.js",
     "route:audit": "node scripts/route-audit.js",
     "arch:score": "node scripts/architecture-score.js",
-    "dev": "node server.js",
     "db:init": "node scripts/init-db.js",
     "db:seed": "node scripts/seed-data.js",
     "db:reset": "node scripts/reset-db.js"
@@ -38,6 +37,7 @@
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
     "express-session": "^1.17.3",
     "graphviz": "^0.0.9",
     "jsonwebtoken": "^9.0.3",

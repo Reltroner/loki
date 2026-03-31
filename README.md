@@ -20,6 +20,18 @@ maintainability
 Universities often manage RPS documents manually using spreadsheets or PDFs.
 This system transforms the workflow into a **centralized web platform** that enables structured academic management.
 
+## 📌 Project Evolution
+
+This system was originally built in 2022 as an academic project and has since evolved significantly.
+
+In 2026, it was fully refactored into a deterministic, layered backend architecture with a focus on:
+- system clarity and maintainability  
+- predictable execution flow  
+- structured separation of concerns  
+- testability and observability  
+
+This evolution reflects a transition from a traditional MVC approach into a production-oriented backend system design.
+
 ### Core Capabilities
 
 * centralized course plan management
@@ -74,7 +86,7 @@ Routes → Controllers → Models → Database
 
 ---
 
-## Phase 4 (Current — Deterministic Architecture)
+## Phase 4 (Deterministic Architecture)
 
 ```text
 Routes
@@ -105,8 +117,6 @@ Database
 
 ## 1. Deterministic Flow
 
-Every request follows a predictable path:
-
 ```text
 Route → Controller → Service → Repository → Model
 ```
@@ -127,19 +137,15 @@ Route → Controller → Service → Repository → Model
 
 ## 3. No Layer Leakage
 
-Strict enforcement:
-
 ```text
-Controller  ❌ no DB access
-Service     ❌ no Sequelize usage (enforced in Phase 4)
-Repository  ✔ single DB gateway
+Controller  ❌ no DB access  
+Service     ❌ no Sequelize usage  
+Repository  ✔ single DB gateway  
 ```
 
 ---
 
 ## 4. Debugging Clarity
-
-System debugging follows **layer-by-layer tracing**:
 
 ```text
 Route → Controller → Service → Repository → DB
@@ -150,8 +156,6 @@ No ambiguity. No guessing.
 ---
 
 # 🔐 Authentication System
-
-Authentication is implemented using:
 
 ```text
 JWT + Cookie-based session
@@ -179,7 +183,7 @@ modules/auth/
 ├── utils/
 ```
 
-Auth is now **fully isolated and modular**.
+Auth is **fully modular and isolated**.
 
 ---
 
@@ -210,8 +214,6 @@ Auth is now **fully isolated and modular**.
 
 # 🗃️ Data Model
 
-Core entities:
-
 | Entity       | Description         |
 | ------------ | ------------------- |
 | Users        | system accounts     |
@@ -225,12 +227,12 @@ Core entities:
 
 ---
 
-# 📁 Project Structure (Phase 4)
+# 📁 Project Structure
 
 ```text
 config/
 controllers/
-middleware/            (legacy → being removed)
+middleware/
 models/
 repositories/
   └── queryBuilders/
@@ -243,14 +245,11 @@ utils/
 views/
 public/
 docs/
-legacy/                (isolated old system)
 ```
 
 ---
 
 # 🧬 Database Lifecycle (Deterministic)
-
-### Standard Flow
 
 ```bash
 npm run db:reset
@@ -258,7 +257,7 @@ npm run db:init
 npm run db:seed
 ```
 
-### Target (Phase 4)
+### Target
 
 ```bash
 npm run db:bootstrap
@@ -266,10 +265,9 @@ npm run db:bootstrap
 
 ### Characteristics
 
-* auto schema sync via Sequelize
-* seeded admin user
-* fully reproducible environment
-* zero ambiguity for new developers
+* reproducible environment
+* seeded baseline data
+* zero ambiguity setup
 
 ---
 
@@ -292,57 +290,141 @@ npm run smoke:test
 
 ---
 
-# 🔄 Phase 4 Refactor Status
-
-## ✅ Completed
-
-* Controller unification
-* Legacy controller isolation
-* Service layer enforcement
-* Authentication modularization
-* Database lifecycle stabilization
-* Middleware centralization (auth module)
+# 🔄 Phase Evolution Summary
 
 ---
 
-## 🔄 In Progress
+## ✅ Phase 4 — Architecture
 
 ```text
-Step 4.3 — Architecture Cleanup & Hardening
+✔ clean layered system
+✔ separation of concerns
+✔ repository pattern
 ```
-
-### Focus
-
-* remove legacy middleware
-* eliminate unused dependencies
-* enforce clean module boundaries
-* reduce system noise
 
 ---
 
-# 🚀 Installation
+## ✅ Phase 5 — Stability
+
+```text
+✔ edge-case awareness
+✔ predictable behavior
+✔ structured thinking
+```
+
+---
+
+## ✅ Phase 6 — Reliability & Automation
+
+```text
+✔ request validation (no input chaos)
+✔ deterministic error system
+✔ service-level error identity (error.code)
+✔ controller error mapping (status-aware)
+✔ edge-case matrix (defined behavior)
+✔ automation testing (no manual testing)
+✔ structured logging (observability)
+```
+
+---
+
+# 🔥 System Guarantees (Phase 6)
+
+After Phase 6, the system guarantees:
+
+```text
+✔ no silent failure
+✔ no random error behavior
+✔ no uncontrolled input
+✔ all flows testable
+✔ all requests observable
+```
+
+---
+
+# 🧪 Automation Testing
 
 ```bash
-git clone https://github.com/Reltroner/loki.git
-cd loki_a2
+npm run smoke:test
+```
 
-npm install
+### Covered Scenarios
 
-npm run db:bootstrap   # (soon)
-npm run dev
+```text
+✔ health check
+✔ login success
+✔ login wrong password → 401
+✔ login invalid input → 400
+✔ register invalid → 400
+✔ register success
+```
+
+---
+
+# 📊 Observability (Logging System)
+
+All requests are logged in structured format:
+
+```js
+{
+  method: 'POST',
+  path: '/auth/login',
+  status: 401,
+  duration: '58ms',
+  user: null
+}
+```
+
+### Characteristics
+
+```text
+✔ consistent
+✔ minimal
+✔ traceable
+✔ production-safe
 ```
 
 ---
 
 # 🧠 Engineering Direction
 
-This project is evolving into:
+This project has evolved into:
 
 ```text
 deterministic backend system
-clean architecture implementation
 low debugging cost system
-modular scalable backend
+fully testable backend
+observable execution system
+```
+
+---
+
+# 🏁 Current System State
+
+```text
+✔ reliable
+✔ predictable
+✔ testable
+✔ observable
+✔ stable
+```
+
+---
+
+# 🚀 Next Phase
+
+```text
+PHASE 7 — SECURITY HARDENING
+```
+
+Focus:
+
+```text
+✔ rate limiting
+✔ brute force protection
+✔ JWT security
+✔ cookie hardening
+✔ data protection
 ```
 
 ---
@@ -362,10 +444,10 @@ modular scalable backend
 
 # 🎓 Academic Context
 
-Originally developed as a university project, now evolving into a:
+Originally developed as a university project, now evolving into:
 
 ```text
-production-grade backend architecture exercise
+production-grade backend engineering system
 ```
 
 ---
@@ -376,9 +458,7 @@ Open source for academic and educational purposes.
 
 ---
 
-# 🔥 Signature Engineering Identity (Added)
-
-This project follows a strict engineering philosophy:
+# 🔥 Signature Engineering Identity
 
 ```text
 Deterministic > Trial & Error
@@ -389,4 +469,19 @@ Small Safe Refactor > Big Rewrite
 
 ---
 
+# 🧠 FINAL INSIGHT
+
+This is no longer:
+
+```text
+just a backend project
+```
+
+This is:
+
+```text
+🔥 a controlled, testable, observable system
+```
+
+---
 
