@@ -1,373 +1,248 @@
-# 📘 RPS Management System
+# 🚀 RPS Management System
 
-### Academic Course Plan (RPS) Platform
+### From Academic Project → Deterministic, Secure Backend System
 
-A role-based **RPS (Rencana Pembelajaran Semester) management platform** built with **Node.js, Express, SQLite, and EJS**, designed to digitize the creation, management, and distribution of course plans in higher education institutions.
+A role-based **RPS (Rencana Pembelajaran Semester) platform** built with **Node.js, Express, SQLite, and EJS** — redesigned into a **deterministic, production-oriented backend system**.
 
-This project has evolved from a traditional MVC system into a **layered, deterministic backend architecture**, emphasizing:
+---
+
+# 🧠 Why This Project Exists
+
+Most universities still manage course plans using:
 
 ```text
-clarity
-stability
-predictability
-maintainability
+spreadsheets
+PDF documents
+manual coordination
+```
+
+This creates:
+
+```text
+❌ inconsistency  
+❌ lack of traceability  
+❌ high operational friction  
 ```
 
 ---
 
-# 🧭 System Overview
+### 💡 This system transforms that into:
 
-Universities often manage RPS documents manually using spreadsheets or PDFs.
-This system transforms the workflow into a **centralized web platform** that enables structured academic management.
+```text
+✔ structured workflow
+✔ centralized data
+✔ role-based access
+✔ deterministic backend behavior
+```
 
-## 📌 Project Evolution
+---
 
-This project was originally developed in 2022 as a collaborative academic system by a team of students.
+# 🔥 What Makes This Project Different
 
-## 🔧 My Contribution (2026 Refactor & Evolution)
+This is NOT just a CRUD application.
 
-In 2026, I independently led a full system refactor, transforming the project into a deterministic, production-oriented backend system with:
+This is a system engineered with:
 
-- layered architecture (controller → service → repository)
-- structured error handling and observability
-- automated testing and system validation
-- modular authentication system
-- improved maintainability and scalability
-
-This phase represents a complete architectural evolution from the original implementation.
-
-### Core Capabilities
-
-* centralized course plan management
-* learning outcome mapping (CPL → CPMK)
-* lecturer RPS authoring tools
-* academic reporting & analytics
-* student RPS discovery
-* printable academic documents
+```text
+Determinism > Trial & Error
+Clarity > Cleverness
+Predictability > Assumptions
+```
 
 ---
 
 # ⚙️ Tech Stack
 
-## Backend
+**Backend**
 
 * Node.js
 * Express.js
 * SQLite (Sequelize ORM)
-* JWT Authentication (cookie-based)
+* JWT (Cookie-based Auth)
 
-## Frontend
+**Frontend**
 
-* HTML
-* CSS
-* JavaScript
-* EJS Template Engine
-
-## Engineering Concepts
-
-* Clean Layered Architecture
-* RESTful Design
-* Middleware-based Security
-* Relational Data Modeling
-* Deterministic System Design
+* EJS
+* HTML / CSS / JS
 
 ---
 
-# 🏗️ Architecture Evolution
+# 🏗️ Architecture (Core Strength)
 
-## Phase ≤3 (Legacy)
+### BEFORE (Legacy)
 
 ```text
-Routes → Controllers → Models → Database
+Routes → Controllers → Models → DB
 ```
 
-### Issues
+Problems:
 
-* mixed architectural styles
-* controller-heavy logic
-* direct model access
-* high debugging cost
+```text
+❌ controller-heavy logic  
+❌ tight coupling  
+❌ hard to debug  
+```
 
 ---
 
-## Phase 4 (Deterministic Architecture)
+### AFTER (Refactored System)
 
 ```text
-Routes
+Route
 ↓
-Controllers
+Controller
 ↓
-Services
+Service
 ↓
-Repositories
+Repository
 ↓
-Models
+Model
 ↓
 Database
 ```
 
-### Characteristics
+---
 
-* deterministic execution flow
-* strict separation of concerns
-* service orchestration layer
-* repository-based data access
-* low debugging complexity
-* traceable system behavior
+### 🎯 Result
+
+```text
+✔ deterministic execution flow  
+✔ strict separation of concerns  
+✔ traceable behavior  
+✔ low debugging cost  
+```
 
 ---
 
-# 🧠 Architectural Principles
+# 🧠 Engineering Principles
+
+---
 
 ## 1. Deterministic Flow
 
 ```text
-Route → Controller → Service → Repository → Model
+Every request follows ONE clear path.
+No hidden logic. No shortcuts.
 ```
 
 ---
 
-## 2. Single Responsibility
-
-| Layer      | Responsibility   |
-| ---------- | ---------------- |
-| Route      | HTTP mapping     |
-| Controller | request/response |
-| Service    | business logic   |
-| Repository | database access  |
-| Model      | ORM schema       |
-
----
-
-## 3. No Layer Leakage
+## 2. Zero Layer Leakage
 
 ```text
 Controller  ❌ no DB access  
-Service     ❌ no Sequelize usage  
-Repository  ✔ single DB gateway  
+Service     ❌ no ORM usage  
+Repository  ✔ single data gateway  
 ```
 
 ---
 
-## 4. Debugging Clarity
+## 3. Debugging Without Guessing
 
 ```text
 Route → Controller → Service → Repository → DB
 ```
 
-No ambiguity. No guessing.
-
----
-
-# 🔐 Authentication System
+If something breaks:
 
 ```text
-JWT + Cookie-based session
+You know exactly where.
 ```
 
-### Flow
+---
+
+# 🔐 Security (Production Baseline)
+
+This system is hardened with **real-world backend security practices**:
+
+---
+
+## 🛡️ Authentication
 
 ```text
-Login
-→ JWT generated
-→ Cookie stored (httpOnly)
-→ Middleware validates
-→ Access granted
+JWT (1h expiration) + httpOnly cookie
 ```
 
-### Module Boundary
+---
+
+## 🚫 Brute Force Protection
 
 ```text
-modules/auth/
-├── authRoutes
-├── authController
-├── authService
-├── authRepository
-├── middleware/
-├── utils/
+✔ rate limiting (login endpoint)
+✔ per-email attempt tracking
+✔ temporary lock after multiple failures
 ```
 
-Auth is **fully modular and isolated**.
-
 ---
 
-# 🧱 Role-Based Access Model
-
-## Admin
-
-* manage courses
-* manage lecturers
-* monitor RPS progress
-* generate reports
-* manage curriculum outcomes
-
-## Lecturer (Dosen)
-
-* create and edit RPS
-* define CPMK
-* design assessments
-* manage references
-
-## Student (Mahasiswa)
-
-* view courses
-* search RPS
-* print documents
-
----
-
-# 🗃️ Data Model
-
-| Entity       | Description         |
-| ------------ | ------------------- |
-| Users        | system accounts     |
-| Lecturers    | academic staff      |
-| Courses      | subjects            |
-| Course Plans | RPS documents       |
-| Plan Details | weekly meetings     |
-| Assessments  | grading components  |
-| CPL          | curriculum outcomes |
-| CPMK         | course outcomes     |
-
----
-
-# 📁 Project Structure
+## 🔒 Cookie Security
 
 ```text
-config/
-controllers/
-middleware/
-models/
-repositories/
-  └── queryBuilders/
-services/
-routes/
-modules/
-  └── auth/
-scripts/
-utils/
-views/
-public/
-docs/
+✔ httpOnly
+✔ sameSite protection
+✔ secure (production)
+✔ expiration aligned with JWT
 ```
 
 ---
 
-# 🧬 Database Lifecycle (Deterministic)
-
-```bash
-npm run db:reset
-npm run db:init
-npm run db:seed
-```
-
-### Target
-
-```bash
-npm run db:bootstrap
-```
-
-### Characteristics
-
-* reproducible environment
-* seeded baseline data
-* zero ambiguity setup
-
----
-
-# 🧪 CLI Tooling (Engineering Observability)
-
-```bash
-node scripts/doctor.js
-node scripts/route-audit.js
-node scripts/dependency-check.js
-node scripts/sequelize-health.js
-npm run smoke:test
-```
-
-### Purpose
-
-* detect architectural issues
-* validate routing layer
-* ensure system stability
-* prevent regression
-
----
-
-# 🔄 Phase Evolution Summary
-
----
-
-## ✅ Phase 4 — Architecture
+## 🧨 Sensitive Data Protection
 
 ```text
-✔ clean layered system
-✔ separation of concerns
-✔ repository pattern
+✔ no "user not found" leak
+✔ no password hints
+✔ unified error: "Invalid credentials"
 ```
 
 ---
 
-## ✅ Phase 5 — Stability
+## ⚠️ Error Sanitization
 
 ```text
-✔ edge-case awareness
-✔ predictable behavior
-✔ structured thinking
+500 → "Internal server error"
 ```
+
+No internal system exposure.
 
 ---
 
-## ✅ Phase 6 — Reliability & Automation
-
-```text
-✔ request validation (no input chaos)
-✔ deterministic error system
-✔ service-level error identity (error.code)
-✔ controller error mapping (status-aware)
-✔ edge-case matrix (defined behavior)
-✔ automation testing (no manual testing)
-✔ structured logging (observability)
-```
+# 🧪 Reliability & Testing
 
 ---
 
-# 🔥 System Guarantees (Phase 6)
-
-After Phase 6, the system guarantees:
-
-```text
-✔ no silent failure
-✔ no random error behavior
-✔ no uncontrolled input
-✔ all flows testable
-✔ all requests observable
-```
-
----
-
-# 🧪 Automation Testing
+## Automated Smoke Testing
 
 ```bash
 npm run smoke:test
 ```
 
-### Covered Scenarios
+---
+
+## Covered Scenarios
 
 ```text
-✔ health check
 ✔ login success
-✔ login wrong password → 401
-✔ login invalid input → 400
-✔ register invalid → 400
-✔ register success
+✔ wrong password → 401
+✔ invalid input → 400
+✔ register validation
+✔ system health
 ```
 
 ---
 
-# 📊 Observability (Logging System)
+## 🎯 Guarantee
 
-All requests are logged in structured format:
+```text
+✔ no silent failure  
+✔ predictable responses  
+✔ all critical flows testable  
+```
+
+---
+
+# 📊 Observability (Built-in)
+
+Every request is logged:
 
 ```js
 {
@@ -379,56 +254,155 @@ All requests are logged in structured format:
 }
 ```
 
-### Characteristics
+---
+
+### Why this matters:
 
 ```text
-✔ consistent
-✔ minimal
-✔ traceable
-✔ production-safe
+✔ faster debugging  
+✔ production visibility  
+✔ no blind spots  
 ```
 
 ---
 
-# 🧠 Engineering Direction
+# 🧬 Evolution Timeline
 
-This project has evolved into:
+---
+
+## Phase 4 — Architecture
 
 ```text
-deterministic backend system
-low debugging cost system
-fully testable backend
-observable execution system
+✔ layered system
+✔ separation of concerns
 ```
 
 ---
 
-# 🏁 Current System State
+## Phase 5 — Stability
 
 ```text
-✔ reliable
-✔ predictable
+✔ predictable behavior
+✔ edge-case awareness
+```
+
+---
+
+## Phase 6 — Reliability
+
+```text
+✔ validation layer
+✔ structured error system
+✔ automation testing
+✔ observability
+```
+
+---
+
+## Phase 7 — Security
+
+```text
+✔ rate limiting
+✔ brute-force protection
+✔ JWT hardening
+✔ cookie security
+✔ data protection
+```
+
+---
+
+# 🏁 Current State
+
+```text
+✔ deterministic
+✔ secure
 ✔ testable
 ✔ observable
-✔ stable
+✔ production-ready baseline
 ```
 
 ---
 
-# 🚀 Next Phase
+# 🧠 What This Project Demonstrates
+
+This project is not about features.
+
+It demonstrates:
+
+---
+
+### 🔥 Engineering Mindset
 
 ```text
-PHASE 7 — SECURITY HARDENING
+✔ structured problem solving  
+✔ system thinking  
+✔ controlled refactoring  
+✔ risk-aware decisions  
+```
+
+---
+
+### 🔥 Backend Engineering Depth
+
+```text
+✔ layered architecture  
+✔ security implementation  
+✔ error modeling  
+✔ observability design  
+```
+
+---
+
+### 🔥 Real-World Readiness
+
+```text
+✔ not fragile  
+✔ not experimental  
+✔ not guess-based  
+```
+
+---
+
+# 👤 My Contribution
+
+Originally built as a student project (2022).
+
+---
+
+### In 2026, I:
+
+```text
+✔ redesigned the architecture
+✔ introduced deterministic system flow
+✔ implemented full error standardization
+✔ built automation testing
+✔ added production-grade security layer
+```
+
+---
+
+### Result:
+
+```text
+from: academic system  
+to:   production-oriented backend system
+```
+
+---
+
+# 🚀 What’s Next
+
+```text
+PHASE 8 — Production Readiness
 ```
 
 Focus:
 
 ```text
-✔ rate limiting
-✔ brute force protection
-✔ JWT security
-✔ cookie hardening
-✔ data protection
+✔ deployment strategy
+✔ environment configuration
+✔ monitoring & logging (real infra)
+✔ scalability
 ```
 
 ---
@@ -446,45 +420,18 @@ Focus:
 
 ---
 
-# 🎓 Academic Context
+# 🧠 Final Thought
 
-Originally developed as a university project, now evolving into:
+Most projects show:
 
 ```text
-production-grade backend engineering system
+"what was built"
 ```
 
----
-
-# 📜 License
-
-Open source for academic and educational purposes.
-
----
-
-# 🔥 Signature Engineering Identity
+This project shows:
 
 ```text
-Deterministic > Trial & Error
-Clarity > Cleverness
-Layer-by-layer Debugging > Guessing
-Small Safe Refactor > Big Rewrite
-```
-
----
-
-# 🧠 FINAL INSIGHT
-
-This is no longer:
-
-```text
-just a backend project
-```
-
-This is:
-
-```text
-🔥 a controlled, testable, observable system
+🔥 how a system is engineered to be reliable, secure, and predictable
 ```
 
 ---
