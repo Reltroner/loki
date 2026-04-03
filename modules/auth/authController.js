@@ -60,16 +60,8 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
 
-  // DEBUG (deterministic placement)
   const { email, password } = req.body;
 
-  if (isLocked(email)) {
-    return res.status(429).render("login", {
-      error: "Too many failed attempts. Try again later."
-    });
-  }
-
-// 🔥 validation minimal (deterministic)
   if (!email || typeof email !== "string") {
     return res.status(400).render("login", {
       error: "Invalid email"
@@ -82,56 +74,64 @@ exports.login = async (req, res) => {
     });
   }
 
+  // 🔥 correct lock check
+  if (isLocked(email)) {
+    return res.status(429).render("login", {
+      error: "Too many failed attempts. Try again later."
+    });
+  }
+
   try {
 
     const data = await authService.loginUser(req.body);
 
-    // 🔥 record successful login
     resetAttempts(email);
 
-    // API request
     if (req.headers["content-type"] === "application/json") {
-      return res.json(data)
+      return res.json(data);
     }
 
-    // set cookie for EJS session
     res.cookie("jwt", data.token, {
       httpOnly: true,
       sameSite: "lax",
-      path: "/"
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 1000
     });
 
-    const role = data.user.role
+    const role = data.user.role;
 
     if (role === "admin") {
-      return res.redirect("/admin/dashboard")
+      return res.redirect("/admin/dashboard");
     }
 
     if (role === "dosen") {
-      return res.redirect(`/dosen/${data.user.id}/courses`)
+      return res.redirect(`/dosen/${data.user.id}/courses`);
     }
 
     if (role === "mahasiswa") {
-      return res.redirect("/mahasiswa/home")
+      return res.redirect("/mahasiswa/home");
     }
 
-    return res.redirect("/")
+    return res.redirect("/");
 
   } catch (err) {
 
-    // 🔥 record failed login attempt
     recordFailure(email);
 
     return res.status(401).render("login", {
-      error: err.message
-    })
+      error: "Invalid credentials"
+    });
 
   }
-}
+};
 
 exports.logout = (req, res) => {
 
-  res.clearCookie("jwt")
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/"
+  });
 
   return res.redirect("/auth/login")
 

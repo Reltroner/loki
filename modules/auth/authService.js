@@ -48,7 +48,10 @@ exports.loginUser = async ({ email, password }) => {
       id: user.id,
       role
     },
-    process.env.TOKEN_SECRET
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: "1h"
+    }
   );
 
   return {

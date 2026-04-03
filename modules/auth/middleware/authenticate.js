@@ -10,25 +10,22 @@ const authenticate = (req, res, next) => {
   }
 
   try {
-
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
 
     req.user = decoded;
+    next();
 
-    return next();
+  } catch (err) {
 
-  } catch (error) {
-
-    // 🔥 deterministic classification (internal only)
-    if (error.name === "TokenExpiredError") {
-      console.error("AUTH ERROR: TOKEN EXPIRED");
-    } else if (error.name === "JsonWebTokenError") {
-      console.error("AUTH ERROR: INVALID TOKEN");
-    } else {
-      console.error("AUTH ERROR:", error.message);
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).render("err401", {
+        error: "Session expired. Please login again."
+      });
     }
 
-    return res.status(401).render("err401");
+    return res.status(401).render("err401", {
+      error: "Invalid token."
+    });
   }
 
 };

@@ -1,5 +1,3 @@
-// server.js
-
 require("dotenv").config();
 
 const express = require("express");
@@ -29,6 +27,7 @@ const loadModules = require("./scripts/module-loader");
 
 const { authenticate } = require("./modules/auth/middleware/authenticate");
 const userContext = require("./middleware/userContext");
+const requestLogger = require("./middleware/requestLogger");
 
 const PORT = process.env.PORT || 8000;
 
@@ -50,11 +49,14 @@ function createApp() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(cookieParser());
-  app.use(methodOverride("_method"));
 
+  app.use(cookieParser());
+
+  app.use(methodOverride("_method"));
   app.use(express.static(path.join(__dirname, "public")));
-  app.use(require("./middleware/requestLogger"));
+
+  // 🔥 observability
+  app.use(requestLogger);
 
   /*
   |----------------------------------------------------------------------
@@ -75,10 +77,9 @@ function createApp() {
 
   /*
   |----------------------------------------------------------------------
-  | Module Loader (auth module dll)
+  | Module Loader
   |----------------------------------------------------------------------
   */
-  app.use(cookieParser());
 
   loadModules(app);
 
@@ -132,7 +133,7 @@ function createApp() {
 
   /*
   |----------------------------------------------------------------------
-  | Global Error Handler
+  | Global Error Handler (FULLY HARDENED)
   |----------------------------------------------------------------------
   */
 
@@ -141,14 +142,28 @@ function createApp() {
     console.error("GLOBAL ERROR:", err);
 
     const status = err.status || 500;
-    const message = err.message || "Internal Server Error";
 
-    // API response
-    if (req.headers["content-type"] === "application/json") {
-      return res.status(status).json({ error: message });
+    // 🔥 sanitize error (no leak)
+    const message =
+      status === 500
+        ? "Internal server error"
+        : err.message || "Error";
+
+    const errorPayload = {
+      error: message,
+      code: err.code || "INTERNAL_ERROR",
+      path: req.path
+    };
+
+    // 🔥 STRICT JSON DETECTION (fix previous weakness)
+    const isApiRequest =
+      req.headers["content-type"]?.includes("application/json") ||
+      req.headers["accept"]?.includes("application/json");
+
+    if (isApiRequest) {
+      return res.status(status).json(errorPayload);
     }
 
-    // View response
     return res.status(status).render("err500", {
       error: message
     });
@@ -159,17 +174,17 @@ function createApp() {
 }
 
 /*
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 | Create SINGLE App Instance
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 */
 
 const app = createApp();
 
 /*
-|----------------------------------------------------------------------
-| Route Printer (CLI Tooling)
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
+| Route Printer
+|--------------------------------------------------------------------------
 */
 
 function printRoutes(stack, prefix = "") {
@@ -204,9 +219,9 @@ function printRoutes(stack, prefix = "") {
 }
 
 /*
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 | Database Bootstrap
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 */
 
 async function bootstrapDatabase() {
@@ -231,9 +246,9 @@ async function bootstrapDatabase() {
 }
 
 /*
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 | Start Server
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 */
 
 async function startServer() {
@@ -266,19 +281,13 @@ async function startServer() {
 }
 
 /*
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 | Start only when executed directly
-|----------------------------------------------------------------------
+|--------------------------------------------------------------------------
 */
 
 if (require.main === module) {
   startServer();
 }
-
-/*
-|----------------------------------------------------------------------
-| Export app for CLI tools
-|----------------------------------------------------------------------
-*/
 
 module.exports = app;
