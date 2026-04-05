@@ -42,7 +42,9 @@ docs/notes/phase4step43plan.md
 docs/notes/phase5finalenddocumentation.md
 docs/notes/phase5tophase8plan.md
 docs/notes/phase6finalenddocumentation.md
+docs/notes/phase7finalenddocumentation.md
 docs/notes/phase7plan.md
+docs/notes/phase8plan.md
 docs/notes/RELTRONER-ENGINEERING-FRAMEWORK.md
 docs/notes/rpspdfgenerator.md
 docs/notes/scriptpowershell.md
@@ -221,6 +223,8 @@ views/err403.ejs
 views/err404.ejs
 views/err500.ejs
 views/home.ejs
+views/landing.ejs
+views/layout.ejs
 views/login.ejs
 views/mahasiswa/cetakRps.ejs
 views/mahasiswa/course_plan.ejs

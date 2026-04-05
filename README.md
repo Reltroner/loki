@@ -311,6 +311,48 @@ Every request is logged:
 
 ---
 
+## 🔥 Phase 8 — UI/UX Foundation (Non-Destructive)
+
+```text
+✔ single source of truth (layout system)
+✔ elimination of UI duplication
+✔ role-based UI rendering
+✔ deterministic view structure
+✔ asset path standardization (CSS, fonts, images)
+✔ font system normalization
+✔ centralized navigation via /dashboard
+✔ alignment between DB ↔ Model ↔ UI (role system)
+✔ removal of legacy includes (header/sidebar/footer)
+✔ clean separation: layout vs content views
+✔ zero 404 asset errors
+✔ stable rendering across all roles
+```
+
+---
+
+### 🧠 Key Architectural Shift
+
+```text
+FROM:
+fragmented views + duplicated UI
+
+TO:
+centralized layout-driven rendering system
+```
+
+---
+
+### 🎯 Result
+
+```text
+✔ predictable UI behavior
+✔ scalable component system
+✔ no rendering conflicts
+✔ consistent experience across admin, dosen, mahasiswa
+```
+
+---
+
 # 🏁 Current State
 
 ```text
@@ -318,7 +360,8 @@ Every request is logged:
 ✔ secure
 ✔ testable
 ✔ observable
-✔ production-ready baseline
+✔ UI-consistent
+✔ production-ready foundation
 ```
 
 ---
@@ -349,6 +392,7 @@ It demonstrates:
 ✔ security implementation  
 ✔ error modeling  
 ✔ observability design  
+✔ UI system architecture (layout-driven)
 ```
 
 ---
@@ -359,13 +403,14 @@ It demonstrates:
 ✔ not fragile  
 ✔ not experimental  
 ✔ not guess-based  
+✔ not UI-chaotic  
 ```
 
 ---
 
 # 👤 My Contribution
 
-Originally built as a student project (2022).
+Originally built as a student project (2022). 
 
 ---
 
@@ -377,6 +422,9 @@ Originally built as a student project (2022).
 ✔ implemented full error standardization
 ✔ built automation testing
 ✔ added production-grade security layer
+✔ rebuilt UI into a layout-driven system (Phase 8)
+✔ eliminated rendering duplication across all views
+✔ aligned data, model, and UI layers
 ```
 
 ---
@@ -393,16 +441,19 @@ to:   production-oriented backend system
 # 🚀 What’s Next
 
 ```text
-PHASE 8 — Production Readiness
+PHASE 9 — PRODUCTION READINESS
 ```
 
 Focus:
 
 ```text
-✔ deployment strategy
+✔ authentication hardening (bcrypt consistency)
+✔ structured logging (audit-ready)
+✔ error classification system
+✔ system observability (production-grade)
 ✔ environment configuration
-✔ monitoring & logging (real infra)
-✔ scalability
+✔ deployment readiness
+✔ scalability considerations
 ```
 
 ---
@@ -435,4 +486,3 @@ This project shows:
 ```
 
 ---
-

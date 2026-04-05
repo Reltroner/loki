@@ -1,11 +1,9 @@
 <!-- views/login.ejs -->
 
-<%- include('partials/header'); -%>
-
 <div class="limiter">
   <div class="container-login100">
     <div class="wrap-login100">
-      <img src="images/logounand.png" alt="logo unand" class="login100-form-title" />
+      <img src="/images/logounand.png" alt="logo unand" class="login100-form-title" />
 
       <form class="login100-form validate-form flex-sb flex-w" action="/auth/login" method="POST">
         <div class="p-t-31">
@@ -38,7 +36,6 @@
       <%= error %>
     </div>
   <% } %>
-<%- include('partials/footer'); -%>
 
 <script>
   const form = document.querySelector("form");

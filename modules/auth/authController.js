@@ -1,45 +1,38 @@
 // modules/auth/authController.js
 
-const authService = require("./authService")
-const {recordFailure, resetAttempts, isLocked} = require("./loginAttemptStore");
+const authService = require("./authService");
+const { recordFailure, resetAttempts, isLocked } = require("./loginAttemptStore");
 
 exports.registerPage = (req, res) => {
-  return res.render("register")
-}
+  return res.render("register");
+};
 
 exports.loginPage = (req, res) => {
-  return res.render("login")
-}
+  return res.render("login");
+};
 
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  // 🔥 validation minimal (deterministic)
   if (!name || typeof name !== "string") {
-    return res.status(400).json({
-      error: "Invalid name"
-    });
+    return res.status(400).json({ error: "Invalid name" });
   }
 
   if (!email || typeof email !== "string") {
-    return res.status(400).json({
-      error: "Invalid email"
-    });
+    return res.status(400).json({ error: "Invalid email" });
   }
 
   if (!password || typeof password !== "string") {
-    return res.status(400).json({
-      error: "Invalid password"
-    });
+    return res.status(400).json({ error: "Invalid password" });
   }
-  try {
 
-    const user = await authService.registerUser(req.body)
+  try {
+    const user = await authService.registerUser(req.body);
 
     return res.json({
       message: "User registered",
       user
-    })
+    });
 
   } catch (err) {
 
@@ -54,9 +47,8 @@ exports.register = async (req, res) => {
       code: err.code || "REGISTER_FAILED",
       path: req.path
     });
-
   }
-}
+};
 
 exports.login = async (req, res) => {
 
@@ -74,7 +66,6 @@ exports.login = async (req, res) => {
     });
   }
 
-  // 🔥 correct lock check
   if (isLocked(email)) {
     return res.status(429).render("login", {
       error: "Too many failed attempts. Try again later."
@@ -87,10 +78,12 @@ exports.login = async (req, res) => {
 
     resetAttempts(email);
 
+    // API response tetap sama (non-breaking)
     if (req.headers["content-type"] === "application/json") {
       return res.json(data);
     }
 
+    // cookie tetap sama (non-breaking)
     res.cookie("jwt", data.token, {
       httpOnly: true,
       sameSite: "lax",
@@ -98,21 +91,8 @@ exports.login = async (req, res) => {
       maxAge: 60 * 60 * 1000
     });
 
-    const role = data.user.role;
-
-    if (role === "admin") {
-      return res.redirect("/admin/dashboard");
-    }
-
-    if (role === "dosen") {
-      return res.redirect(`/dosen/${data.user.id}/courses`);
-    }
-
-    if (role === "mahasiswa") {
-      return res.redirect("/mahasiswa/home");
-    }
-
-    return res.redirect("/");
+    // 🔥 PHASE 8 COMPLIANCE
+    return res.redirect("/dashboard");
 
   } catch (err) {
 
@@ -133,6 +113,5 @@ exports.logout = (req, res) => {
     path: "/"
   });
 
-  return res.redirect("/auth/login")
-
-}
+  return res.redirect("/auth/login");
+};

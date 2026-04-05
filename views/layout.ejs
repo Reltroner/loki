@@ -1,0 +1,59 @@
+<!-- // views/layout.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title><%= typeof title !== "undefined" ? title : "RPS System" %></title>
+
+  <!-- CORE CSS -->
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/util.css" />
+  <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="/css/table.css" />
+
+  <!-- ROLE CSS (SAFE LOAD — NO OVERENGINEERING) -->
+  <link rel="stylesheet" href="/css/style-admin.css" />
+  <link rel="stylesheet" href="/css/style-dosen.css" />
+  <link rel="stylesheet" href="/css/style-mahasiswa.css" />
+
+  <!-- LIBRARY -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- ICON -->
+  <link rel="icon" href="/images/favicon.ico" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <%- include("partials/header") %>
+
+  <!-- APP SHELL -->
+  <div style="display:flex">
+
+    <!-- SIDEBAR -->
+    <%- include("partials/sidebar") %>
+
+    <!-- MAIN CONTENT -->
+    <main style="flex:1; padding:20px;">
+      <%- body %>
+    </main>
+
+  </div>
+
+  <!-- FOOTER -->
+  <%- include("partials/footer") %>
+
+  <!-- JS -->
+  <script src="/js/script.js"></script>
+  <script src="/js/datatables-simple-demo.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+</body>
+</html>
