@@ -44,7 +44,9 @@ docs/notes/phase5tophase8plan.md
 docs/notes/phase6finalenddocumentation.md
 docs/notes/phase7finalenddocumentation.md
 docs/notes/phase7plan.md
+docs/notes/phase8finalenddocumentation.md
 docs/notes/phase8plan.md
+docs/notes/phase9plan.md
 docs/notes/RELTRONER-ENGINEERING-FRAMEWORK.md
 docs/notes/rpspdfgenerator.md
 docs/notes/scriptpowershell.md
@@ -126,6 +128,9 @@ public/css/style-mahasiswa.css
 public/css/styles.css
 public/css/table.css
 public/css/util.css
+public/fonts/montserrat/Montserrat-Medium.ttf
+public/fonts/montserrat/Montserrat-SemiBold.ttf
+public/fonts/poppins/Poppins-Regular.ttf
 public/images/bar.png
 public/images/burger_small_adm.png
 public/images/burger_small_ds.png
@@ -171,6 +176,7 @@ scripts/reset-db.js
 scripts/route-audit.js
 scripts/routes-list.js
 scripts/seed-data.js
+scripts/seed-users.js
 scripts/sequelize-health.js
 scripts/smoke-test.js
 server.js

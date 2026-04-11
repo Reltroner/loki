@@ -1,0 +1,33 @@
+<!-- views/layouts/main.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || "RPS System" %></title>
+
+  <!-- GLOBAL CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/table.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <%- include("../partials/header") %>
+
+  <!-- SIDEBAR (optional by role) -->
+  <% if (user) { %>
+    <%- include("../partials/sidebar") %>
+  <% } %>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <%- body %>
+  </main>
+
+  <!-- FOOTER -->
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

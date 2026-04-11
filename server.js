@@ -1,3 +1,5 @@
+// server.js
+
 require("dotenv").config();
 
 const express = require("express");
@@ -34,6 +36,19 @@ const PORT = process.env.PORT || 8000;
 
 /*
 |--------------------------------------------------------------------------
+| Helpers (PHASE 9)
+|--------------------------------------------------------------------------
+*/
+
+function isApiRequest(req) {
+  return (
+    req.headers["content-type"]?.includes("application/json") ||
+    req.headers["accept"]?.includes("application/json")
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
 | App Factory
 |--------------------------------------------------------------------------
 */
@@ -54,6 +69,8 @@ function createApp() {
   app.use(cookieParser());
 
   app.use(methodOverride("_method"));
+
+  // 🔥 STATIC MUST BE ROOTED (NO /public prefix in URL)
   app.use(express.static(path.join(__dirname, "public")));
 
   app.use(expressLayouts);
@@ -66,7 +83,7 @@ function createApp() {
   | View Engine
   |----------------------------------------------------------------------
   */
-  
+
   app.set("layout", "layout");
   app.set("view engine", "ejs");
   app.set("views", path.join(__dirname, "views"));
@@ -137,7 +154,7 @@ function createApp() {
 
   /*
   |----------------------------------------------------------------------
-  | Health Check
+  | Health Check (PHASE 9 IMPORTANT)
   |----------------------------------------------------------------------
   */
 
@@ -145,6 +162,7 @@ function createApp() {
     res.json({
       status: "ok",
       uptime: process.uptime(),
+      env: process.env.NODE_ENV,
       timestamp: Date.now()
     });
   });
@@ -156,22 +174,35 @@ function createApp() {
   */
 
   app.use((req, res) => {
-    res.status(404).render("err404");
+
+    if (isApiRequest(req)) {
+      return res.status(404).json({
+        error: "Not Found",
+        code: "NOT_FOUND",
+        path: req.path
+      });
+    }
+
+    return res.status(404).render("err404");
   });
 
   /*
   |----------------------------------------------------------------------
-  | Global Error Handler (FULLY HARDENED)
+  | Global Error Handler (PHASE 9 HARDENED)
   |----------------------------------------------------------------------
   */
 
   app.use((err, req, res, next) => {
 
-    console.error("GLOBAL ERROR:", err);
+    console.error("GLOBAL ERROR:", {
+      message: err.message,
+      code: err.code,
+      path: req.path,
+      timestamp: Date.now()
+    });
 
     const status = err.status || 500;
 
-    // 🔥 sanitize error (no leak)
     const message =
       status === 500
         ? "Internal server error"
@@ -183,12 +214,7 @@ function createApp() {
       path: req.path
     };
 
-    // 🔥 STRICT JSON DETECTION (fix previous weakness)
-    const isApiRequest =
-      req.headers["content-type"]?.includes("application/json") ||
-      req.headers["accept"]?.includes("application/json");
-
-    if (isApiRequest) {
+    if (isApiRequest(req)) {
       return res.status(status).json(errorPayload);
     }
 
@@ -226,7 +252,6 @@ function printRoutes(stack, prefix = "") {
         .join(",");
 
       console.log(`${methods.padEnd(10)} ${prefix}${layer.route.path}`);
-
     }
 
     else if (layer.name === "router" && layer.handle.stack) {
@@ -239,7 +264,6 @@ function printRoutes(stack, prefix = "") {
           .replace(/\\\//g, "/") || "";
 
       printRoutes(layer.handle.stack, prefix + newPrefix);
-
     }
 
   });
@@ -283,6 +307,12 @@ async function startServer() {
 
   try {
 
+    // 🔥 ENV VALIDATION (PHASE 9.5 CRITICAL)
+    if (!process.env.TOKEN_SECRET) {
+      console.error("❌ TOKEN_SECRET missing in .env");
+      process.exit(1);
+    }
+
     await bootstrapDatabase();
 
     console.log("\n=== EXPRESS ROUTE LIST ===");
@@ -295,6 +325,7 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`ENV: ${process.env.NODE_ENV}`);
     });
 
   }

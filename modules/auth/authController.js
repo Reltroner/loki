@@ -3,6 +3,14 @@
 const authService = require("./authService");
 const { recordFailure, resetAttempts, isLocked } = require("./loginAttemptStore");
 
+// 🔥 helper: detect API request (deterministic)
+function isApiRequest(req) {
+  return (
+    req.headers["content-type"]?.includes("application/json") ||
+    req.headers["accept"]?.includes("application/json")
+  );
+}
+
 exports.registerPage = (req, res) => {
   return res.render("register");
 };
@@ -12,22 +20,51 @@ exports.loginPage = (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+
+  let { name, email, password } = req.body;
+
+  // 🔥 normalization (PHASE 9)
+  if (typeof email === "string") {
+    email = email.trim().toLowerCase();
+  }
 
   if (!name || typeof name !== "string") {
-    return res.status(400).json({ error: "Invalid name" });
+    return res.status(400).json({
+      error: "Invalid name",
+      code: "INVALID_NAME",
+      path: req.path
+    });
   }
 
   if (!email || typeof email !== "string") {
-    return res.status(400).json({ error: "Invalid email" });
+    return res.status(400).json({
+      error: "Invalid email",
+      code: "INVALID_EMAIL",
+      path: req.path
+    });
   }
 
   if (!password || typeof password !== "string") {
-    return res.status(400).json({ error: "Invalid password" });
+    return res.status(400).json({
+      error: "Invalid password",
+      code: "INVALID_PASSWORD",
+      path: req.path
+    });
   }
 
   try {
-    const user = await authService.registerUser(req.body);
+
+    const user = await authService.registerUser({
+      name,
+      email,
+      password
+    });
+
+    console.log({
+      action: "REGISTER",
+      email,
+      timestamp: Date.now()
+    });
 
     return res.json({
       message: "User registered",
@@ -43,7 +80,7 @@ exports.register = async (req, res) => {
     }
 
     return res.status(status).json({
-      error: err.message,
+      error: err.message || "Register failed",
       code: err.code || "REGISTER_FAILED",
       path: req.path
     });
@@ -52,21 +89,53 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
 
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+
+  // 🔥 normalization (PHASE 9)
+  if (typeof email === "string") {
+    email = email.trim().toLowerCase();
+  }
 
   if (!email || typeof email !== "string") {
+
+    if (isApiRequest(req)) {
+      return res.status(400).json({
+        error: "Invalid email",
+        code: "INVALID_EMAIL",
+        path: req.path
+      });
+    }
+
     return res.status(400).render("login", {
       error: "Invalid email"
     });
   }
 
   if (!password || typeof password !== "string") {
+
+    if (isApiRequest(req)) {
+      return res.status(400).json({
+        error: "Invalid password",
+        code: "INVALID_PASSWORD",
+        path: req.path
+      });
+    }
+
     return res.status(400).render("login", {
       error: "Invalid password"
     });
   }
 
   if (isLocked(email)) {
+
+    if (isApiRequest(req)) {
+      return res.status(429).json({
+        error: "Too many attempts",
+        code: "TOO_MANY_ATTEMPTS",
+        path: req.path
+      });
+    }
+
     return res.status(429).render("login", {
       error: "Too many failed attempts. Try again later."
     });
@@ -74,16 +143,21 @@ exports.login = async (req, res) => {
 
   try {
 
-    const data = await authService.loginUser(req.body);
+    const data = await authService.loginUser({ email, password });
 
     resetAttempts(email);
 
-    // API response tetap sama (non-breaking)
-    if (req.headers["content-type"] === "application/json") {
+    console.log({
+      action: "LOGIN_SUCCESS",
+      email,
+      userId: data.user.id,
+      timestamp: Date.now()
+    });
+
+    if (isApiRequest(req)) {
       return res.json(data);
     }
 
-    // cookie tetap sama (non-breaking)
     res.cookie("jwt", data.token, {
       httpOnly: true,
       sameSite: "lax",
@@ -91,17 +165,29 @@ exports.login = async (req, res) => {
       maxAge: 60 * 60 * 1000
     });
 
-    // 🔥 PHASE 8 COMPLIANCE
     return res.redirect("/dashboard");
 
   } catch (err) {
 
     recordFailure(email);
 
+    console.log({
+      action: "LOGIN_FAILED",
+      email,
+      timestamp: Date.now()
+    });
+
+    if (isApiRequest(req)) {
+      return res.status(401).json({
+        error: "Invalid credentials",
+        code: "INVALID_CREDENTIALS",
+        path: req.path
+      });
+    }
+
     return res.status(401).render("login", {
       error: "Invalid credentials"
     });
-
   }
 };
 

@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
 
       type: {
         type: DataTypes.STRING
+      },
+
+      role: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
 
     },

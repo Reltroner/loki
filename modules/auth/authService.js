@@ -8,6 +8,12 @@ const { normalizeRole } = require("./utils/roleMapper");
 
 exports.registerUser = async ({ name, email, password }) => {
 
+  if (!name || !email || !password) {
+    const err = new Error("Missing required data");
+    err.code = "DATA_REQUIRED";
+    throw err;
+  }
+
   const hash = await bcrypt.hash(password, 10);
 
   const user = await userRepository.createUser({
@@ -24,21 +30,32 @@ exports.registerUser = async ({ name, email, password }) => {
     email: user.email,
     role
   };
-
+  
 };
 
 exports.loginUser = async ({ email, password }) => {
 
+  if (!email || !password) {
+    const err = new Error("Invalid parameters");
+    err.code = "INVALID_PARAMS";
+    throw err;
+  }
+
   const user = await userRepository.findUserByEmail(email);
 
+  // 🔥 SECURITY: no user existence leak
   if (!user) {
-    throw new Error("User not found");
+    const err = new Error("Invalid credentials");
+    err.code = "INVALID_CREDENTIALS";
+    throw err;
   }
 
   const match = await bcrypt.compare(password, user.password);
 
   if (!match) {
-    throw new Error("Wrong password");
+    const err = new Error("Invalid credentials");
+    err.code = "INVALID_CREDENTIALS";
+    throw err;
   }
 
   const role = normalizeRole(user);
@@ -63,5 +80,4 @@ exports.loginUser = async ({ email, password }) => {
       role
     }
   };
-
 };

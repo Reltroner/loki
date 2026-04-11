@@ -13,12 +13,25 @@ const roleToType = {
 };
 
 function normalizeRole(user) {
-  if (!user) return null;
+  if (!user) return "guest";
 
-  if (user.role) return user.role;
+  // 🔥 PRIORITY 1: role (database)
+  if (user.role) {
+    const role = String(user.role).toLowerCase().trim();
 
-  if (user.type) return typeToRole[user.type] || "guest";
+    if (role === "admin") return "admin";
+    if (role === "dosen") return "dosen";
+    if (role === "mahasiswa") return "mahasiswa";
 
+    return "guest"; // 🔥 unknown role → fallback
+  }
+
+  // 🔥 PRIORITY 2: legacy type (T/D/M)
+  if (user.type) {
+    return typeToRole[user.type] || "guest";
+  }
+
+  // 🔥 fallback
   return "guest";
 }
 

@@ -15,9 +15,9 @@ exports.createUser = async ({ name, email, password }) => {
 
 exports.findUserByEmail = async (email) => {
 
-  const user = await Users.findOne({
-    where: { email }
-  })
+  return Users.findOne({
+    where: { email },
+    attributes: ["id", "name", "email", "password", "role"]
+  });
 
-  return user
-}
+};
